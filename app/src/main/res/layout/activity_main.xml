@@ -6,11 +6,17 @@
 
 <<<<<<< b8191f5f3b9d282c26e13a72b5384976ffbd5894
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
 
 =======
 
+<<<<<<< HEAD
 =======
 >>>>>>> Changed colors and start game activity on play button
+=======
+>>>>>>> b8191f5f3b9d282c26e13a72b5384976ffbd5894
+>>>>>>> 510bfb34b622c82020316e8ef3391fd114b565ce
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,7 +53,12 @@
             android:src="@drawable/levels_button"/>
     </LinearLayout>
 
+<<<<<<< HEAD
 <<<<<<< b8191f5f3b9d282c26e13a72b5384976ffbd5894
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 510bfb34b622c82020316e8ef3391fd114b565ce
 
     <ImageButton
         android:layout_width="100dp"
@@ -59,6 +70,10 @@
         android:layout_marginBottom="20dp"
         android:src="@drawable/play" />
 >>>>>>> 3e0734a57da09dd258ea281095f2253b7313002b
+<<<<<<< HEAD
 =======
 >>>>>>> Changed colors and start game activity on play button
+=======
+>>>>>>> b8191f5f3b9d282c26e13a72b5384976ffbd5894
+>>>>>>> 510bfb34b622c82020316e8ef3391fd114b565ce
 </RelativeLayout>
