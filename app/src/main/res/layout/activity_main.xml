@@ -4,47 +4,50 @@
     android:layout_height="match_parent"
     android:background="@drawable/main_menu">
 
+<<<<<<< b8191f5f3b9d282c26e13a72b5384976ffbd5894
 <<<<<<< HEAD
 
 =======
 
+=======
+>>>>>>> Changed colors and start game activity on play button
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="1">
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.55"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:weightSum="10">
         <ImageButton
-            android:layout_width="200dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.12"
-            android:scaleType="fitCenter"
-            android:background="@null"
-            android:src="@drawable/levels"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_alignParentRight="true"
-        android:weightSum="1">
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.55"/>
-        <ImageButton
-            android:layout_width="200dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.12"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="2"
             android:background="@null"
             android:scaleType="fitCenter"
-            android:src="@drawable/settings"/>
+            android:layout_marginStart="10dp"
+            android:contentDescription="@string/levels"
+            android:src="@drawable/settings_button"/>
+        <ImageButton
+            android:layout_width="0dp"
+            android:id="@+id/button_main_play"
+            android:layout_height="70dp"
+            android:scaleType="fitCenter"
+            android:background="@null"
+            android:layout_weight="6"
+            android:layout_marginBottom="20dp"
+            android:contentDescription="@string/play"
+            android:src="@drawable/play" />
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="2"
+            android:scaleType="fitCenter"
+            android:background="@null"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="@string/settings"
+            android:src="@drawable/levels_button"/>
     </LinearLayout>
 
+<<<<<<< b8191f5f3b9d282c26e13a72b5384976ffbd5894
 
     <ImageButton
         android:layout_width="100dp"
@@ -56,4 +59,6 @@
         android:layout_marginBottom="20dp"
         android:src="@drawable/play" />
 >>>>>>> 3e0734a57da09dd258ea281095f2253b7313002b
+=======
+>>>>>>> Changed colors and start game activity on play button
 </RelativeLayout>
