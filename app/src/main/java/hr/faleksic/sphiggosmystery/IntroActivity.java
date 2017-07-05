@@ -75,6 +75,7 @@ public class IntroActivity extends AppCompatActivity {
         volatile int  num = 0;
         long startFrameTime;
         long timeThisFrame = 0;
+        int taps = 0;
 
         public IntroScroll(Context context, int screenWidth, int screenHeight) {
             super(context);
@@ -152,6 +153,12 @@ public class IntroActivity extends AppCompatActivity {
                     if(stop) {
                         startActivity(new Intent(getApplicationContext(), GameActivity.class));
                         finish();
+                    } else {
+                        taps++;
+                        if(taps == 3){
+                            startActivity(new Intent(getApplicationContext(), GameActivity.class));
+                            finish();
+                        }
                     }
                     break;
             }

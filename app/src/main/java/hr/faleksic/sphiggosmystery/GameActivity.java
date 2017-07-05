@@ -1,6 +1,5 @@
 package hr.faleksic.sphiggosmystery;
 
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

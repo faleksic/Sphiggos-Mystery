@@ -1,8 +1,11 @@
 package hr.faleksic.sphiggosmystery;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -22,10 +25,14 @@ public class SMView extends SurfaceView implements Runnable {
     long timeThisFrame;
     long fps;
     private LevelManager levelManager;
-    private Viewport viewport;
     InputController inputController;
-    int x;
-    int y;
+    int width;
+    int height;
+    int frameWidth = 25;
+    int frameHeight = 45;
+
+    private Rect frameToDraw = new Rect(frameWidth*13, frameHeight*3, frameWidth*14, frameHeight*4);
+    private RectF whereToDraw;
 
     public SMView(Context context, int screenWidth, int screenHeight) {
         super(context);
@@ -33,9 +40,9 @@ public class SMView extends SurfaceView implements Runnable {
         this.context = context;
         ourHolder = getHolder();
         paint = new Paint();
-        //TODO: maknuti ovo
-        this.x = screenWidth;
-        this.y = screenHeight;
+        this.width = screenWidth;
+        this.height = screenHeight;
+        levelManager = new LevelManager(context, 1, screenWidth, screenHeight);
     }
 
     @Override
@@ -59,9 +66,14 @@ public class SMView extends SurfaceView implements Runnable {
     private void draw() {
         if (ourHolder.getSurface().isValid()){
             canvas = ourHolder.lockCanvas();
-            Drawable d = ContextCompat.getDrawable(context, R.drawable.game_background);
-            d.setBounds(0, 0, x, y);
-            d.draw(canvas);
+
+            canvas.drawBitmap(levelManager.getBackgroundImg(), 0, 0, null);
+            canvas.drawBitmap(levelManager.getClosedDoor(), canvas.getWidth()/2-levelManager.getClosedDoor().getWidth()/2, 0, null);
+            whereToDraw = new RectF(levelManager.getPlayer().getPositionX(), levelManager.getPlayer().getPositionY(),
+                    levelManager.getPlayer().getPositionX() + (int)(canvas.getWidth()/6),
+                    levelManager.getPlayer().getPositionY() + (int)(canvas.getHeight()*0.405));
+            canvas.drawBitmap(levelManager.getPlayer().getBitmap(), frameToDraw, whereToDraw, null);
+            canvas.drawBitmap(levelManager.getEnemy(), (int)(canvas.getWidth()/1.5), (int)(canvas.getHeight()*0.405), null);
 
             ourHolder.unlockCanvasAndPost(canvas);
         }
