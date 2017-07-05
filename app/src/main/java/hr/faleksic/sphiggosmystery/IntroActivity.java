@@ -114,7 +114,7 @@ public class IntroActivity extends AppCompatActivity {
                 canvas.drawPaint(paint);
                 TextPaint tp = new TextPaint();
                 tp.setColor(Color.WHITE);
-                tp.setTextSize(30);
+                tp.setTextSize(20 * getResources().getDisplayMetrics().density);
                 tp.setTextAlign(Paint.Align.CENTER);
                 tp.setAntiAlias(true);
                 StaticLayout sl = new StaticLayout(getResources().getString(R.string.intro), tp,
