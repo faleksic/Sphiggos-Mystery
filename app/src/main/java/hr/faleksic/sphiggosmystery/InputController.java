@@ -9,12 +9,9 @@ public class InputController {
     }
 
     public void handleInput(MotionEvent motionEvent, LevelManager l, SMView sm) {
-        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK   ) {
+        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 if(!sm.isShowedRules()) {
-                    if (!l.isRules()) {
-                        l.setRules(true);
-                    }
                     sm.setNumCLicks(numClicks);
                     numClicks++;
                 }

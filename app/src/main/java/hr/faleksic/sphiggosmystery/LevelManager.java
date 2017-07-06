@@ -11,13 +11,11 @@ public class LevelManager {
     private int level;
     private Bitmap backgroundImg;
     private Bitmap closedDoor;
-    private Bitmap opendDoor;
-    private Bitmap enemy;
+    private Enemy enemy;
     private Bitmap gameOnTable;
     private Bitmap textbox;
     private int screenWidth;
     private int screenHeight;
-    private boolean rules = false;
     private ArrayList<String> rulesText;
     private Player player;
     private BitmapFactory.Options options = new BitmapFactory.Options();
@@ -34,22 +32,13 @@ public class LevelManager {
 
         switch (level) {
             case 1:
-                options.inScaled = false;
-                enemy = Bitmap.createScaledBitmap(BitmapFactory.decodeResource
-                        (context.getResources(),R.drawable.al, options), (int)(screenWidth*0.1), (int)(screenHeight*0.35), false);
-                gameOnTable = Bitmap.createScaledBitmap(BitmapFactory.decodeResource
-                        (context.getResources(),R.drawable.game1, options), (int)(screenWidth*0.1), (int)(screenHeight*0.15), false);
-                for(int i=1; i<6; i++) {
-                    rulesText.add(getStringResourceByName("al_one_rule_" + String.valueOf(i)));
-                }
+                new LevelOne(context, this, screenWidth, screenHeight);
         }
     }
 
     private void prepareLevel() {
         backgroundImg = Bitmap.createScaledBitmap(BitmapFactory.decodeResource
                 (context.getResources(),R.drawable.game_background), screenWidth, screenHeight, false);
-        opendDoor = Bitmap.createScaledBitmap(BitmapFactory.decodeResource
-                (context.getResources(),R.drawable.door_opened), (int)(screenWidth*0.2), (int)(screenHeight*0.405), false);
         closedDoor = Bitmap.createScaledBitmap(BitmapFactory.decodeResource
                 (context.getResources(),R.drawable.door_closed), (int)(screenWidth*0.2), (int)(screenHeight*0.405), false);
         player = new Player(context, (int)(screenWidth/5), (int)(screenHeight/2.5));
@@ -57,7 +46,7 @@ public class LevelManager {
                 (context.getResources(),R.drawable.textbox), screenWidth, (int)(screenHeight*0.3), false);
     }
 
-    private String getStringResourceByName(String aString) {
+    public String getStringResourceByName(String aString) {
         String packageName = context.getPackageName();
         int resId = context.getResources().getIdentifier(aString, "string", packageName);
         return context.getString(resId);
@@ -68,8 +57,11 @@ public class LevelManager {
         return backgroundImg;
     }
 
-    public void setBackgroundImg(Bitmap backgroundImg) {
-        this.backgroundImg = backgroundImg;
+    public void setBackgroundImg(String backgroundImg) {
+        int resID = context.getResources().getIdentifier(backgroundImg,"drawable", context.getPackageName());
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),resID);
+        bitmap = Bitmap.createScaledBitmap(bitmap, screenWidth, screenHeight, false);
+        this.backgroundImg = bitmap;
     }
 
     public Bitmap getClosedDoor() {
@@ -80,8 +72,12 @@ public class LevelManager {
         return player;
     }
 
-    public Bitmap getEnemy() {
+    public Enemy getEnemy() {
         return enemy;
+    }
+
+    public void setEnemy(Enemy enemy) {
+        this.enemy = enemy;
     }
 
     public Bitmap getGameOnTable() {
@@ -100,11 +96,11 @@ public class LevelManager {
         return rulesText;
     }
 
-    public boolean isRules() {
-        return rules;
+    public void setRulesText(ArrayList<String> rulesText) {
+        this.rulesText = rulesText;
     }
 
-    public void setRules(boolean rules) {
-        this.rules = rules;
+    public void setGameOnTable(Bitmap gameOnTable) {
+        this.gameOnTable = gameOnTable;
     }
 }

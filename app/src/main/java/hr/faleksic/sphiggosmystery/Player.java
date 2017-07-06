@@ -10,17 +10,12 @@ public class Player extends  GameObject {
         setBitmapName("player");
         setHeight(180);
         setWidth(350);
-        bitmap = prepareBitmap(context, "player");
+        bitmap = prepareBitmap(context, "player", true);
         setPositionX(positionX);
         setPositionY(positionY);
     }
 
     public Bitmap getBitmap() {
         return bitmap;
-    }
-
-    @Override
-    public void update(long fps, float gravity) {
-
     }
 }

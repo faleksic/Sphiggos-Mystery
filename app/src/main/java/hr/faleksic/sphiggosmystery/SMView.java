@@ -29,6 +29,7 @@ public class SMView extends SurfaceView implements Runnable {
     private LevelManager levelManager;
     private InputController inputController = new InputController();
     private boolean showedRules = false;
+    private boolean gameStart = false;
     private int width;
     private int height;
     private int frameWidth = 25;
@@ -69,21 +70,37 @@ public class SMView extends SurfaceView implements Runnable {
     }
 
     private void draw() {
-        if (ourHolder.getSurface().isValid()){
+        if (ourHolder.getSurface().isValid()) {
             canvas = ourHolder.lockCanvas();
 
+            //background
             canvas.drawBitmap(levelManager.getBackgroundImg(), 0, 0, null);
-            canvas.drawBitmap(levelManager.getClosedDoor(), canvas.getWidth()/2-levelManager.getClosedDoor().getWidth()/2, 0, null);
-            whereToDraw = new RectF(levelManager.getPlayer().getPositionX(), levelManager.getPlayer().getPositionY(),
-                    levelManager.getPlayer().getPositionX() + (int)(canvas.getWidth()/6),
-                    levelManager.getPlayer().getPositionY() + (int)(canvas.getHeight()*0.405));
-            canvas.drawBitmap(levelManager.getPlayer().getBitmap(), frameToDraw, whereToDraw, null);
-            canvas.drawBitmap(levelManager.getEnemy(), (int)(canvas.getWidth()/1.5), (int)(canvas.getHeight()*0.405), null);
-            canvas.drawBitmap(levelManager.getGameOnTable(), (int)(canvas.getWidth()/2-levelManager.getGameOnTable().getWidth()/2), (int)(canvas.getHeight()*0.47), null);
-            if(levelManager.isRules()) {
-                displayRules();
+            if (!gameStart) {
+                //doors
+                canvas.drawBitmap(levelManager.getClosedDoor(), canvas.getWidth() / 2 - levelManager.getClosedDoor().getWidth() / 2, 0, null);
+                //player
+                whereToDraw = new RectF(levelManager.getPlayer().getPositionX(), levelManager.getPlayer().getPositionY(),
+                        levelManager.getPlayer().getPositionX() + (int) (canvas.getWidth() / 6),
+                        levelManager.getPlayer().getPositionY() + (int) (canvas.getHeight() * 0.405));
+                canvas.drawBitmap(levelManager.getPlayer().getBitmap(), frameToDraw, whereToDraw, null);
+                //enemy
+                canvas.drawBitmap(levelManager.getEnemy().prepareBitmap(context, levelManager.getEnemy().getBitmapName(), true), levelManager.getEnemy().getPositionX(), levelManager.getEnemy().getPositionY(), null);
+                //game on the table
+                canvas.drawBitmap(levelManager.getGameOnTable(), (int) (canvas.getWidth() / 2 - levelManager.getGameOnTable().getWidth() / 2), (int) (canvas.getHeight() * 0.47), null);
+            } else {
+                switch (levelManager.getLevel()) {
+                    case 1:
+                }
             }
-
+            if (!showedRules) {
+                displayRules();
+            } else {
+                showedRules = true;
+                if (!gameStart) {
+                    gameStart = true;
+                    levelManager.setBackgroundImg("game1_background");
+                }
+            }
             ourHolder.unlockCanvasAndPost(canvas);
         }
     }
@@ -121,9 +138,7 @@ public class SMView extends SurfaceView implements Runnable {
                     (int)(canvas.getWidth()*0.9), Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
             canvas.translate((int)(canvas.getWidth()*0.05), (int)(canvas.getHeight()-levelManager.getTextbox().getHeight()/1.1));
             sl.draw(canvas);
-            //canvas.drawText(levelManager.getRulesText().get(numCLicks), (int)(canvas.getWidth()*0.05), canvas.getHeight()-levelManager.getTextbox().getHeight()/2, paint);
         } else {
-            levelManager.setRules(false);
             showedRules = true;
         }
     }
@@ -134,5 +149,9 @@ public class SMView extends SurfaceView implements Runnable {
 
     public boolean isShowedRules() {
         return showedRules;
+    }
+
+    public void setShowedRules(boolean showedRules) {
+        this.showedRules = showedRules;
     }
 }

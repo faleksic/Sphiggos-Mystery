@@ -11,17 +11,15 @@ public abstract class GameObject {
     private int positionY;
     private String bitmapName;
 
-    public abstract void update(long fps, float gravity);
-
     public String getBitmapName() {
         return bitmapName;
     }
 
 
-    public Bitmap prepareBitmap(Context context, String bitmapName) {
+    public Bitmap prepareBitmap(Context context, String bitmapName, boolean removeBlur) {
         int resID = context.getResources().getIdentifier(bitmapName,"drawable", context.getPackageName());
         Bitmap bitmap;
-        if(bitmapName == "player"){
+        if(removeBlur){
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;
             bitmap = BitmapFactory.decodeResource(context.getResources(),resID, options);
