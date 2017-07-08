@@ -10,14 +10,13 @@ public class LevelManager {
     private Context context;
     private int level;
     private Bitmap backgroundImg;
-    private Bitmap closedDoor;
-    private Enemy enemy;
-    private Bitmap gameOnTable;
     private Bitmap textbox;
     private int screenWidth;
     private int screenHeight;
     private ArrayList<String> rulesText;
-    private Player player;
+    private LevelData levelData;
+    private ArrayList<GameObject> gameObjects;
+    private Bitmap[] bitmaps;
     private BitmapFactory.Options options = new BitmapFactory.Options();
 
     public  LevelManager(Context context, int level, int width, int height) {
@@ -28,22 +27,31 @@ public class LevelManager {
 
         rulesText = new ArrayList<>();
 
-        prepareLevel();
-
         switch (level) {
-            case 1:
-                new LevelOne(context, this, screenWidth, screenHeight);
+            case 1: {
+                levelData = new LevelOne(context, screenWidth, screenHeight);
+                for (int i = 1; i < 6; i++) {
+                    rulesText.add(getStringResourceByName("al_one_rule_" + String.valueOf(i)));
+                }
+                gameObjects = levelData.data;
+                bitmaps = new Bitmap[gameObjects.size()];
+                break;
+            }
         }
+
+        prepareLevel();
     }
 
     private void prepareLevel() {
         backgroundImg = Bitmap.createScaledBitmap(BitmapFactory.decodeResource
                 (context.getResources(),R.drawable.game_background), screenWidth, screenHeight, false);
-        closedDoor = Bitmap.createScaledBitmap(BitmapFactory.decodeResource
-                (context.getResources(),R.drawable.door_closed), (int)(screenWidth*0.2), (int)(screenHeight*0.405), false);
-        player = new Player(context, (int)(screenWidth/5), (int)(screenHeight/2.5));
         textbox = Bitmap.createScaledBitmap(BitmapFactory.decodeResource
                 (context.getResources(),R.drawable.textbox), screenWidth, (int)(screenHeight*0.3), false);
+        int i = 0;
+        for(GameObject go : gameObjects){
+            bitmaps[i] = go.prepareBitmap(context, go.getBitmapName());
+            i++;
+        }
     }
 
     public String getStringResourceByName(String aString) {
@@ -64,26 +72,6 @@ public class LevelManager {
         this.backgroundImg = bitmap;
     }
 
-    public Bitmap getClosedDoor() {
-        return closedDoor;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public Enemy getEnemy() {
-        return enemy;
-    }
-
-    public void setEnemy(Enemy enemy) {
-        this.enemy = enemy;
-    }
-
-    public Bitmap getGameOnTable() {
-        return gameOnTable;
-    }
-
     public Bitmap getTextbox() {
         return textbox;
     }
@@ -96,11 +84,11 @@ public class LevelManager {
         return rulesText;
     }
 
-    public void setRulesText(ArrayList<String> rulesText) {
-        this.rulesText = rulesText;
+    public ArrayList<GameObject> getGameObjects() {
+        return gameObjects;
     }
 
-    public void setGameOnTable(Bitmap gameOnTable) {
-        this.gameOnTable = gameOnTable;
+    public Bitmap[] getBitmaps() {
+        return bitmaps;
     }
 }

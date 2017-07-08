@@ -10,13 +10,15 @@ public abstract class GameObject {
     private int positionX;
     private int positionY;
     private String bitmapName;
+    private boolean visible = true;
+    private boolean removeBlur = false;
 
     public String getBitmapName() {
         return bitmapName;
     }
 
 
-    public Bitmap prepareBitmap(Context context, String bitmapName, boolean removeBlur) {
+    public Bitmap prepareBitmap(Context context, String bitmapName) {
         int resID = context.getResources().getIdentifier(bitmapName,"drawable", context.getPackageName());
         Bitmap bitmap;
         if(removeBlur){
@@ -56,5 +58,17 @@ public abstract class GameObject {
 
     public int getPositionY() {
         return positionY;
+    }
+
+    public boolean isVisiable() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    public void setRemoveBlur(boolean removeBlur) {
+        this.removeBlur = removeBlur;
     }
 }

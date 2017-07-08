@@ -1,8 +1,8 @@
 package hr.faleksic.sphiggosmystery;
 
-public class Enemy extends GameObject {
+public class GameOnTable extends GameObject {
 
-    Enemy(String name, int width, int height, int positionX, int positionY) {
+    GameOnTable(String name, int width, int height, int positionX, int positionY) {
         setBitmapName(name);
         setPositionX(positionX);
         setPositionY(positionY);

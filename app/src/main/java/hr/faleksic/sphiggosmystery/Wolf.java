@@ -7,5 +7,6 @@ public class Wolf extends GameObject {
         setPositionY(positionY);
         setHeight(height);
         setWidth(width);
+        setVisible(false);
     }
 }

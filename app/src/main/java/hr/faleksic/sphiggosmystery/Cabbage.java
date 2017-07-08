@@ -7,5 +7,6 @@ public class Cabbage extends GameObject {
         setPositionY(positionY);
         setHeight(height);
         setWidth(width);
+        setVisible(false);
     }
 }

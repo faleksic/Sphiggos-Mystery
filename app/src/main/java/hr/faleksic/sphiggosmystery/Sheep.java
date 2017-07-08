@@ -7,5 +7,6 @@ public class Sheep extends GameObject {
         setPositionY(positionY);
         setHeight(height);
         setWidth(width);
+        setVisible(false);
     }
 }

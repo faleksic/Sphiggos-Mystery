@@ -1,6 +1,7 @@
 package hr.faleksic.sphiggosmystery;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,6 +14,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class SMView extends SurfaceView implements Runnable {
 
@@ -29,14 +33,16 @@ public class SMView extends SurfaceView implements Runnable {
     private LevelManager levelManager;
     private InputController inputController = new InputController();
     private boolean showedRules = false;
-    private boolean gameStart = false;
     private int width;
     private int height;
     private int frameWidth = 25;
     private int frameHeight = 45;
-    private int numCLicks = 0;
+    private int numCLicks = -1;
+    private int playerIndex;
+    private ArrayList<GameObject> gameObjects;
+    private Bitmap[] bitmaps;
 
-    private Rect frameToDraw = new Rect(frameWidth*13, frameHeight*3, frameWidth*14, frameHeight*4);
+    private Rect frameToDraw;
     private RectF whereToDraw;
 
 
@@ -49,6 +55,18 @@ public class SMView extends SurfaceView implements Runnable {
         this.width = screenWidth;
         this.height = screenHeight;
         levelManager = new LevelManager(context, 1, screenWidth, screenHeight);
+        this.gameObjects = levelManager.getGameObjects();
+        this.bitmaps = levelManager.getBitmaps();
+        for(int i=0; i<gameObjects.size(); i++) {
+            if(Objects.equals(gameObjects.get(i).getBitmapName(), "player")) {
+                playerIndex = i;
+                break;
+            }
+        }
+        whereToDraw = new RectF(gameObjects.get(playerIndex).getPositionX(), gameObjects.get(playerIndex).getPositionY(),
+                gameObjects.get(playerIndex).getPositionX() + width / 6,
+                gameObjects.get(playerIndex).getPositionY() + (int) (height * 0.405));
+        frameToDraw = new Rect(frameWidth*13, frameHeight*3, frameWidth*14, frameHeight*4);
     }
 
     @Override
@@ -67,6 +85,9 @@ public class SMView extends SurfaceView implements Runnable {
     }
 
     private void update() {
+        if(numCLicks == -1){
+
+        }
     }
 
     private void draw() {
@@ -75,31 +96,16 @@ public class SMView extends SurfaceView implements Runnable {
 
             //background
             canvas.drawBitmap(levelManager.getBackgroundImg(), 0, 0, null);
-            if (!gameStart) {
-                //doors
-                canvas.drawBitmap(levelManager.getClosedDoor(), canvas.getWidth() / 2 - levelManager.getClosedDoor().getWidth() / 2, 0, null);
-                //player
-                whereToDraw = new RectF(levelManager.getPlayer().getPositionX(), levelManager.getPlayer().getPositionY(),
-                        levelManager.getPlayer().getPositionX() + (int) (canvas.getWidth() / 6),
-                        levelManager.getPlayer().getPositionY() + (int) (canvas.getHeight() * 0.405));
-                canvas.drawBitmap(levelManager.getPlayer().getBitmap(), frameToDraw, whereToDraw, null);
-                //enemy
-                canvas.drawBitmap(levelManager.getEnemy().prepareBitmap(context, levelManager.getEnemy().getBitmapName(), true), levelManager.getEnemy().getPositionX(), levelManager.getEnemy().getPositionY(), null);
-                //game on the table
-                canvas.drawBitmap(levelManager.getGameOnTable(), (int) (canvas.getWidth() / 2 - levelManager.getGameOnTable().getWidth() / 2), (int) (canvas.getHeight() * 0.47), null);
-            } else {
-                switch (levelManager.getLevel()) {
-                    case 1:
+            int i = 0;
+            for(GameObject go : gameObjects) {
+                if(go.isVisiable()) {
+                    if(!Objects.equals(go.getBitmapName(), "player")) {
+                        canvas.drawBitmap(bitmaps[i], go.getPositionX(), go.getPositionY(), null);
+                    } else {
+                        canvas.drawBitmap(bitmaps[i], frameToDraw, whereToDraw, null);
+                    }
                 }
-            }
-            if (!showedRules) {
-                displayRules();
-            } else {
-                showedRules = true;
-                if (!gameStart) {
-                    gameStart = true;
-                    levelManager.setBackgroundImg("game1_background");
-                }
+                i++;
             }
             ourHolder.unlockCanvasAndPost(canvas);
         }
@@ -122,7 +128,7 @@ public class SMView extends SurfaceView implements Runnable {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if(levelManager != null) {
-            inputController.handleInput(event, levelManager, this);
+            inputController.handleInput(event, this);
         }
         return true;
     }
@@ -149,9 +155,5 @@ public class SMView extends SurfaceView implements Runnable {
 
     public boolean isShowedRules() {
         return showedRules;
-    }
-
-    public void setShowedRules(boolean showedRules) {
-        this.showedRules = showedRules;
     }
 }
