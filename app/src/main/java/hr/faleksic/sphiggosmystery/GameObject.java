@@ -40,6 +40,10 @@ public abstract class GameObject {
         this.height = height;
     }
 
+    public float getHeight() {
+        return height;
+    }
+
     public void setWidth(float width) {
         this.width = width;
     }

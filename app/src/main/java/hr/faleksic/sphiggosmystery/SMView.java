@@ -39,6 +39,7 @@ public class SMView extends SurfaceView implements Runnable {
     private int frameHeight = 45;
     private int numCLicks = -1;
     private int playerIndex;
+    private int rulesIndex;
     private ArrayList<GameObject> gameObjects;
     private Bitmap[] bitmaps;
 
@@ -60,7 +61,8 @@ public class SMView extends SurfaceView implements Runnable {
         for(int i=0; i<gameObjects.size(); i++) {
             if(Objects.equals(gameObjects.get(i).getBitmapName(), "player")) {
                 playerIndex = i;
-                break;
+            } else if(Objects.equals(gameObjects.get(i).getBitmapName(), "textbox")) {
+                rulesIndex = i;
             }
         }
         whereToDraw = new RectF(gameObjects.get(playerIndex).getPositionX(), gameObjects.get(playerIndex).getPositionY(),
@@ -74,7 +76,6 @@ public class SMView extends SurfaceView implements Runnable {
         while(running) {
             startFrameTime = System.currentTimeMillis();
 
-            update();
             draw();
 
             timeThisFrame = System.currentTimeMillis() - startFrameTime;
@@ -83,19 +84,11 @@ public class SMView extends SurfaceView implements Runnable {
             }
         }
     }
-
-    private void update() {
-        if(numCLicks == -1){
-
-        }
-    }
-
     private void draw() {
         if (ourHolder.getSurface().isValid()) {
             canvas = ourHolder.lockCanvas();
 
-            //background
-            canvas.drawBitmap(levelManager.getBackgroundImg(), 0, 0, null);
+            //drawing game objects
             int i = 0;
             for(GameObject go : gameObjects) {
                 if(go.isVisiable()) {
@@ -106,6 +99,16 @@ public class SMView extends SurfaceView implements Runnable {
                     }
                 }
                 i++;
+            }
+
+            if(!showedRules) {
+                if(numCLicks > -1) {
+                    if(numCLicks < levelManager.getRulesText().size()) {
+                        displayRules();
+                    } else {
+                        showedRules = true;
+                    }
+                }
             }
             ourHolder.unlockCanvasAndPost(canvas);
         }
@@ -134,23 +137,23 @@ public class SMView extends SurfaceView implements Runnable {
     }
 
     private void displayRules(){
-        canvas.drawBitmap(levelManager.getTextbox(), 0, canvas.getHeight()-levelManager.getTextbox().getHeight(), null);
+
 
         TextPaint tp = new TextPaint();
         tp.setColor(Color.BLACK);
         tp.setTextSize(20 * getResources().getDisplayMetrics().density);
-        if(numCLicks < levelManager.getRulesText().size()) {
-            StaticLayout sl = new StaticLayout(levelManager.getRulesText().get(numCLicks), tp,
-                    (int)(canvas.getWidth()*0.9), Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
-            canvas.translate((int)(canvas.getWidth()*0.05), (int)(canvas.getHeight()-levelManager.getTextbox().getHeight()/1.1));
-            sl.draw(canvas);
-        } else {
-            showedRules = true;
-        }
+        StaticLayout sl = new StaticLayout(levelManager.getRulesText().get(numCLicks), tp,
+                (int)(canvas.getWidth()*0.9), Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
+        canvas.translate((int)(canvas.getWidth()*0.05), (int)(canvas.getHeight()-gameObjects.get(rulesIndex).getHeight()/1.1));
+        sl.draw(canvas);
     }
 
     public void setNumCLicks(int numCLicks) {
         this.numCLicks = numCLicks;
+    }
+
+    public int getNumCLicks() {
+        return numCLicks;
     }
 
     public boolean isShowedRules() {
