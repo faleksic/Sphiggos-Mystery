@@ -15,7 +15,8 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class SMView extends SurfaceView implements Runnable {
@@ -33,14 +34,23 @@ public class SMView extends SurfaceView implements Runnable {
     private LevelManager levelManager;
     private InputController inputController;
     private boolean showedRules = false;
-    private int numCLicks = -1;
-    private int playerIndex;
-    private int rulesIndex;
-    private ArrayList<GameObject> gameObjects;
+    private int numClicks = -1;
+    private LinkedHashMap<String, GameObject> gameObjects;
     private Bitmap[] bitmaps;
     private boolean miniGame = false;
     private Rect frameToDraw;
     private RectF whereToDraw;
+
+    private static final String PLAYER_KEY = "player";
+    private static final String SHEEP_KEY = "sheep";
+    private static final String WOLF_KEY = "wolf";
+    private static final String CABBAGE_KEY = "cabbage";
+    private static final String BACKGROUND_KEY = "background";
+    private static final String ENEMY_KEY = "enemy";
+    private static final String DOOR_KEY = "door";
+    private static final String RULESBOX_KEY = "rulesBox";
+    private static final String BOAT_KEY = "boat";
+    private static final String GAMEONTABLE_KEY = "gameOnTable";
 
 
     public SMView(Context context, int screenWidth, int screenHeight) {
@@ -54,19 +64,11 @@ public class SMView extends SurfaceView implements Runnable {
         this.bitmaps = levelManager.getBitmaps();
         inputController = new InputController(screenWidth, screenHeight);
 
-        for(int i=0; i<gameObjects.size(); i++) {
-            if(Objects.equals(gameObjects.get(i).getBitmapName(), "player")) {
-                playerIndex = i;
-            } else if(Objects.equals(gameObjects.get(i).getBitmapName(), "textbox")) {
-                rulesIndex = i;
-            }
-        }
-
         int frameWidth = 25;
         int frameHeight = 45;
-        whereToDraw = new RectF(gameObjects.get(playerIndex).getPositionX(), gameObjects.get(playerIndex).getPositionY(),
-                gameObjects.get(playerIndex).getPositionX() + screenWidth / 6,
-                gameObjects.get(playerIndex).getPositionY() + (int) (screenHeight * 0.405));
+        whereToDraw = new RectF(gameObjects.get(PLAYER_KEY).getPositionX(), gameObjects.get(PLAYER_KEY).getPositionY(),
+                gameObjects.get(PLAYER_KEY).getPositionX() + screenWidth / 6,
+                gameObjects.get(PLAYER_KEY).getPositionY() + (int) (screenHeight * 0.405));
         frameToDraw = new Rect(frameWidth*13, frameHeight*3, frameWidth*14, frameHeight*4);
     }
 
@@ -89,10 +91,10 @@ public class SMView extends SurfaceView implements Runnable {
 
             //drawing game objects
             int i = 0;
-            for(GameObject go : gameObjects) {
-                if(go.isVisiable()) {
-                    if(!Objects.equals(go.getBitmapName(), "player")) {
-                        canvas.drawBitmap(bitmaps[i], go.getPositionX(), go.getPositionY(), null);
+            for(Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
+                if(go.getValue().isVisiable()) {
+                    if(!Objects.equals(go.getKey(), PLAYER_KEY)) {
+                        canvas.drawBitmap(bitmaps[i], go.getValue().getPositionX(), go.getValue().getPositionY(), null);
                     } else {
                         canvas.drawBitmap(bitmaps[i], frameToDraw, whereToDraw, null);
                     }
@@ -101,30 +103,30 @@ public class SMView extends SurfaceView implements Runnable {
             }
             //checking are rules showed
             if(!showedRules) {
-                if(numCLicks > -1) {
-                    if(numCLicks < levelManager.getRulesText().size()) {
+                if(numClicks > -1) {
+                    if(numClicks < levelManager.getRulesText().size()) {
                         displayRules();
                     } else {
                         showedRules = true;
                         miniGame = true;
-                        gameObjects.get(rulesIndex).setVisible(false);
+                        gameObjects.get(RULESBOX_KEY).setVisible(false);
                     }
                 }
             }
 
             if(miniGame) {
                 i = 0;
-                for(GameObject go : gameObjects) {
-                    if(Objects.equals(go.getClass(), Background.class)){
-                        go.setBitmapName("game1_background");
-                        bitmaps[i] = go.prepareBitmap(context, go.getBitmapName());
-                    } else if(Objects.equals(go.getClass(), Sheep.class)
-                            || Objects.equals(go.getClass(), Wolf.class)
-                            || Objects.equals(go.getClass(), Cabbage.class)
-                            || Objects.equals(go.getClass(), Boat.class)) {
-                        go.setVisible(true);
+                for(Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
+                    if(Objects.equals(go.getKey(), BACKGROUND_KEY)){
+                        go.getValue().setBitmapName("game1_background");
+                        bitmaps[i] = go.getValue().prepareBitmap(context, go.getValue().getBitmapName());
+                    } else if(Objects.equals(go.getKey(), SHEEP_KEY)
+                            || Objects.equals(go.getKey(), WOLF_KEY)
+                            || Objects.equals(go.getKey(), CABBAGE_KEY)
+                            || Objects.equals(go.getKey(), BOAT_KEY)) {
+                        go.getValue().setVisible(true);
                     } else {
-                        go.setVisible(false);
+                        go.getValue().setVisible(false);
                     }
                     i++;
                 }
@@ -156,23 +158,31 @@ public class SMView extends SurfaceView implements Runnable {
     }
 
     private void displayRules() {
-       gameObjects.get(rulesIndex).setVisible(true);
+        if(!gameObjects.get(RULESBOX_KEY).isVisiable()) {
+            gameObjects.get(RULESBOX_KEY).setVisible(true);
+        }
+        if(numClicks < levelManager.getRulesText().size()) {
 
-        TextPaint tp = new TextPaint();
-        tp.setColor(Color.BLACK);
-        tp.setTextSize(20 * getResources().getDisplayMetrics().density);
-        StaticLayout sl = new StaticLayout(levelManager.getRulesText().get(numCLicks), tp,
-                (int)(canvas.getWidth()*0.9), Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
-        canvas.translate((int)(canvas.getWidth()*0.05), (int)(canvas.getHeight()-gameObjects.get(rulesIndex).getHeight()/1.1));
-        sl.draw(canvas);
+            TextPaint tp = new TextPaint();
+            tp.setColor(Color.BLACK);
+            tp.setTextSize(20 * getResources().getDisplayMetrics().density);
+            StaticLayout sl = new StaticLayout(levelManager.getRulesText().get(numClicks), tp,
+                    (int) (canvas.getWidth() * 0.9), Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
+            canvas.translate((int) (canvas.getWidth() * 0.05), (int) (canvas.getHeight() - gameObjects.get(RULESBOX_KEY).getHeight() / 1.1));
+            sl.draw(canvas);
+        }
+    }
+
+    public void moveSheep() {
+
     }
 
     public void setNumCLicks(int numCLicks) {
-        this.numCLicks = numCLicks;
+        this.numClicks = numCLicks;
     }
 
     public int getNumCLicks() {
-        return numCLicks;
+        return numClicks;
     }
 
     public boolean isShowedRules() {

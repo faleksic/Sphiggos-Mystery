@@ -34,6 +34,7 @@ public class InputController {
                                     (int) (screenWidth * 0.8), screenHeight);
                             if (sheepButton.contains(x, y)) {
                                 Log.e(InputController.class.getSimpleName(), "OOOVCAAA");
+                                sm.moveSheep();
                             } else if(wolfButton.contains(x, y)) {
                                 Log.e(InputController.class.getSimpleName(), "VuK");
                             } else if(cabbageButton.contains(x, y)) {

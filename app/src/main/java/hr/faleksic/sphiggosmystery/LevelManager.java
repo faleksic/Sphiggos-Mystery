@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class LevelManager {
     private Context context;
@@ -12,7 +14,7 @@ public class LevelManager {
     private int screenHeight;
     private ArrayList<String> rulesText;
     private LevelData levelData;
-    private ArrayList<GameObject> gameObjects;
+    private LinkedHashMap<String, GameObject> gameObjects;
     private Bitmap[] bitmaps;
 
     public  LevelManager(Context context, int level, int width, int height) {
@@ -40,8 +42,8 @@ public class LevelManager {
 
     private void prepareLevel() {
         int i = 0;
-        for(GameObject go : gameObjects){
-            bitmaps[i] = go.prepareBitmap(context, go.getBitmapName());
+        for(Map.Entry<String, GameObject> go : gameObjects.entrySet()){
+            bitmaps[i] = go.getValue().prepareBitmap(context, go.getValue().getBitmapName());
             i++;
         }
     }
@@ -60,7 +62,7 @@ public class LevelManager {
         return rulesText;
     }
 
-    public ArrayList<GameObject> getGameObjects() {
+    public LinkedHashMap<String, GameObject> getGameObjects() {
         return gameObjects;
     }
 

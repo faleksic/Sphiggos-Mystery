@@ -1,7 +1,7 @@
 package hr.faleksic.sphiggosmystery;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class LevelData {
-    ArrayList<GameObject> data;
+    LinkedHashMap<String, GameObject> data;
 }
