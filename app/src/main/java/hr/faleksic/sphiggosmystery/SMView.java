@@ -31,18 +31,14 @@ public class SMView extends SurfaceView implements Runnable {
     long timeThisFrame;
     long fps;
     private LevelManager levelManager;
-    private InputController inputController = new InputController();
+    private InputController inputController;
     private boolean showedRules = false;
-    private int width;
-    private int height;
-    private int frameWidth = 25;
-    private int frameHeight = 45;
     private int numCLicks = -1;
     private int playerIndex;
     private int rulesIndex;
     private ArrayList<GameObject> gameObjects;
     private Bitmap[] bitmaps;
-
+    private boolean miniGame = false;
     private Rect frameToDraw;
     private RectF whereToDraw;
 
@@ -53,11 +49,11 @@ public class SMView extends SurfaceView implements Runnable {
         this.context = context;
         ourHolder = getHolder();
         paint = new Paint();
-        this.width = screenWidth;
-        this.height = screenHeight;
         levelManager = new LevelManager(context, 1, screenWidth, screenHeight);
         this.gameObjects = levelManager.getGameObjects();
         this.bitmaps = levelManager.getBitmaps();
+        inputController = new InputController(screenWidth, screenHeight);
+
         for(int i=0; i<gameObjects.size(); i++) {
             if(Objects.equals(gameObjects.get(i).getBitmapName(), "player")) {
                 playerIndex = i;
@@ -65,9 +61,12 @@ public class SMView extends SurfaceView implements Runnable {
                 rulesIndex = i;
             }
         }
+
+        int frameWidth = 25;
+        int frameHeight = 45;
         whereToDraw = new RectF(gameObjects.get(playerIndex).getPositionX(), gameObjects.get(playerIndex).getPositionY(),
-                gameObjects.get(playerIndex).getPositionX() + width / 6,
-                gameObjects.get(playerIndex).getPositionY() + (int) (height * 0.405));
+                gameObjects.get(playerIndex).getPositionX() + screenWidth / 6,
+                gameObjects.get(playerIndex).getPositionY() + (int) (screenHeight * 0.405));
         frameToDraw = new Rect(frameWidth*13, frameHeight*3, frameWidth*14, frameHeight*4);
     }
 
@@ -100,14 +99,34 @@ public class SMView extends SurfaceView implements Runnable {
                 }
                 i++;
             }
-
+            //checking are rules showed
             if(!showedRules) {
                 if(numCLicks > -1) {
                     if(numCLicks < levelManager.getRulesText().size()) {
                         displayRules();
                     } else {
                         showedRules = true;
+                        miniGame = true;
+                        gameObjects.get(rulesIndex).setVisible(false);
                     }
+                }
+            }
+
+            if(miniGame) {
+                i = 0;
+                for(GameObject go : gameObjects) {
+                    if(Objects.equals(go.getClass(), Background.class)){
+                        go.setBitmapName("game1_background");
+                        bitmaps[i] = go.prepareBitmap(context, go.getBitmapName());
+                    } else if(Objects.equals(go.getClass(), Sheep.class)
+                            || Objects.equals(go.getClass(), Wolf.class)
+                            || Objects.equals(go.getClass(), Cabbage.class)
+                            || Objects.equals(go.getClass(), Boat.class)) {
+                        go.setVisible(true);
+                    } else {
+                        go.setVisible(false);
+                    }
+                    i++;
                 }
             }
             ourHolder.unlockCanvasAndPost(canvas);
@@ -131,13 +150,13 @@ public class SMView extends SurfaceView implements Runnable {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if(levelManager != null) {
-            inputController.handleInput(event, this);
+            inputController.handleInput(event, this, levelManager);
         }
         return true;
     }
 
-    private void displayRules(){
-
+    private void displayRules() {
+       gameObjects.get(rulesIndex).setVisible(true);
 
         TextPaint tp = new TextPaint();
         tp.setColor(Color.BLACK);
@@ -158,5 +177,13 @@ public class SMView extends SurfaceView implements Runnable {
 
     public boolean isShowedRules() {
         return showedRules;
+    }
+
+    public boolean isMiniGame() {
+        return miniGame;
+    }
+
+    public void setMiniGame(boolean miniGame) {
+        this.miniGame = miniGame;
     }
 }
