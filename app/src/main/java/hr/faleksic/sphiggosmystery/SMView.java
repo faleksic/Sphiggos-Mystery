@@ -40,6 +40,8 @@ public class SMView extends SurfaceView implements Runnable {
     private boolean miniGame = false;
     private Rect frameToDraw;
     private RectF whereToDraw;
+    private int screenWidth;
+    private int screenHeight;
 
     private static final String PLAYER_KEY = "player";
     private static final String SHEEP_KEY = "sheep";
@@ -57,6 +59,8 @@ public class SMView extends SurfaceView implements Runnable {
         super(context);
 
         this.context = context;
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
         ourHolder = getHolder();
         paint = new Paint();
         levelManager = new LevelManager(context, 1, screenWidth, screenHeight);
@@ -77,6 +81,7 @@ public class SMView extends SurfaceView implements Runnable {
         while(running) {
             startFrameTime = System.currentTimeMillis();
 
+            update();
             draw();
 
             timeThisFrame = System.currentTimeMillis() - startFrameTime;
@@ -85,6 +90,38 @@ public class SMView extends SurfaceView implements Runnable {
             }
         }
     }
+
+    private void update() {
+        if(((Sheep)gameObjects.get(SHEEP_KEY)).isMoving()) {
+            Sheep sheep = (Sheep)gameObjects.get(SHEEP_KEY);
+            if(sheep.isInBoat()) {
+                if(sheep.getPositionX() < screenWidth/1.3) {
+                    sheep.setPositionX(sheep.getPositionX() + (int)(screenWidth*0.005));
+                }
+                if(sheep.getPositionY() > screenHeight*0.1) {
+                    sheep.setPositionY(sheep.getPositionY() - (int)(screenHeight*0.005));
+                }
+                if(sheep.getPositionX() >= screenWidth/1.3 && sheep.getPositionY() <= screenHeight*0.1) {
+                    sheep.setInBoat(false);
+                    sheep.setMoving(false);
+                }
+
+            } else {
+                if(sheep.getPositionX() > screenWidth/1.7) {
+                    sheep.setPositionX(sheep.getPositionX() - (int)(screenWidth*0.005));
+                }
+                if(sheep.getPositionY() < screenHeight*0.26) {
+                    sheep.setPositionY(sheep.getPositionY() + (int)(screenHeight*0.005));
+                }
+                if(sheep.getPositionX() <= screenWidth/1.7 && sheep.getPositionY() >= screenHeight*0.26) {
+                    sheep.setInBoat(true);
+                    sheep.setMoving(false);
+                }
+            }
+        }
+
+    }
+
     private void draw() {
         if (ourHolder.getSurface().isValid()) {
             canvas = ourHolder.lockCanvas();
@@ -110,26 +147,13 @@ public class SMView extends SurfaceView implements Runnable {
                         showedRules = true;
                         miniGame = true;
                         gameObjects.get(RULESBOX_KEY).setVisible(false);
+                        showMiniGame();
                     }
                 }
             }
 
             if(miniGame) {
-                i = 0;
-                for(Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
-                    if(Objects.equals(go.getKey(), BACKGROUND_KEY)){
-                        go.getValue().setBitmapName("game1_background");
-                        bitmaps[i] = go.getValue().prepareBitmap(context, go.getValue().getBitmapName());
-                    } else if(Objects.equals(go.getKey(), SHEEP_KEY)
-                            || Objects.equals(go.getKey(), WOLF_KEY)
-                            || Objects.equals(go.getKey(), CABBAGE_KEY)
-                            || Objects.equals(go.getKey(), BOAT_KEY)) {
-                        go.getValue().setVisible(true);
-                    } else {
-                        go.getValue().setVisible(false);
-                    }
-                    i++;
-                }
+
             }
             ourHolder.unlockCanvasAndPost(canvas);
         }
@@ -173,8 +197,26 @@ public class SMView extends SurfaceView implements Runnable {
         }
     }
 
-    public void moveSheep() {
+    private void showMiniGame() {
+        int i = 0;
+        for(Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
+            if(Objects.equals(go.getKey(), BACKGROUND_KEY)){
+                go.getValue().setBitmapName("game1_background");
+                bitmaps[i] = go.getValue().prepareBitmap(context, go.getValue().getBitmapName());
+            } else if(Objects.equals(go.getKey(), SHEEP_KEY)
+                    || Objects.equals(go.getKey(), WOLF_KEY)
+                    || Objects.equals(go.getKey(), CABBAGE_KEY)
+                    || Objects.equals(go.getKey(), BOAT_KEY)) {
+                go.getValue().setVisible(true);
+            } else {
+                go.getValue().setVisible(false);
+            }
+            i++;
+        }
+    }
 
+    public void moveSheep() {
+        ((Sheep)gameObjects.get(SHEEP_KEY)).setMoving(true);
     }
 
     public void setNumCLicks(int numCLicks) {
