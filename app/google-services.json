@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "210982292962",
+    "firebase_url": "https://sphiggos-mystery.firebaseio.com",
+    "project_id": "sphiggos-mystery",
+    "storage_bucket": "sphiggos-mystery.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:210982292962:android:1d022c4f7a465d84",
+        "android_client_info": {
+          "package_name": "hr.faleksic.sphiggosmystery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "210982292962-rnq93fc3bbqa373em6tu93qtqpt9f2pm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDP_49-zgd1dmYeBHq1CswTlHQ7q4ghtGk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
