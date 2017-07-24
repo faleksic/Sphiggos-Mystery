@@ -33,12 +33,14 @@ public class InputController {
                             Rect boatButton = new Rect((int) (screenWidth * 0.66), (int) (screenHeight * 0.74),
                                     (int) (screenWidth * 0.8), screenHeight);
                             if (sheepButton.contains(x, y)) {
-                                Log.e(InputController.class.getSimpleName(), "OOOVCAAA");
+                                //Log.e(InputController.class.getSimpleName(), "OOOVCAAA");
                                 sm.moveSheep();
                             } else if(wolfButton.contains(x, y)) {
-                                Log.e(InputController.class.getSimpleName(), "VuK");
+                               // Log.e(InputController.class.getSimpleName(), "VuK");
+                                sm.moveWolf();
                             } else if(cabbageButton.contains(x, y)) {
                                 Log.e(InputController.class.getSimpleName(), "Zelenje");
+                                sm.moveCabbage();
                             } else if(boatButton.contains(x, y)) {
                                 Log.e(InputController.class.getSimpleName(), "brod");
                             }

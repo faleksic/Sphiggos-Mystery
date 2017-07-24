@@ -36,17 +36,6 @@ public class IntroActivity extends AppCompatActivity {
         display.getSize(resolution);
         introScroll = new IntroScroll(this, resolution.x, resolution.y);
         setContentView(introScroll);
-        /*TextView textView = (TextView) findViewById(R.id.tv_intro_story);
-        textView.setSelected(true);
-
-        Button button = (Button) findViewById(R.id.button_intro_skip);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), GameActivity.class));
-                finish();
-            }
-        });*/
     }
 
     @Override
@@ -100,7 +89,7 @@ public class IntroActivity extends AppCompatActivity {
         private void update() {
             if(!stop) {
                 if (timeThisFrame - startFrameTime > 1) {
-                    num++;
+                    num += (int)(Math.ceil(y * 0.002));
                     startFrameTime = System.currentTimeMillis();
                 }
             }
@@ -110,24 +99,33 @@ public class IntroActivity extends AppCompatActivity {
             if (ourHolder.getSurface().isValid()){
                 canvas = ourHolder.lockCanvas();
                 paint.setColor(Color.BLACK);
+                paint.setAntiAlias(true);
                 paint.setStyle(Paint.Style.FILL);
                 canvas.drawPaint(paint);
                 TextPaint tp = new TextPaint();
                 tp.setColor(Color.WHITE);
-                tp.setTextSize(15 * getResources().getDisplayMetrics().density);
+                tp.setTextSize(20 * getResources().getDisplayMetrics().density);
                 tp.setTextAlign(Paint.Align.CENTER);
                 tp.setAntiAlias(true);
+
+
                 StaticLayout sl = new StaticLayout(getResources().getString(R.string.intro), tp,
-                        (int)(canvas.getWidth()/1.33), Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
-                canvas.translate(canvas.getWidth()/2, (int)(canvas.getHeight()/1.1)-num);
+                        (int)(canvas.getWidth() / 1.33), Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
+
+                canvas.save();
+
+                canvas.translate(canvas.getWidth() / 2, (int)(canvas.getHeight() / 1.1) - num);
+
                 //if the y translate coordinate is higher than canvas height minus static layout minus 3/2 of the layout than stop text scroll
-                if((canvas.getHeight()-sl.getHeight()-canvas.getHeight()/3) > (int)(canvas.getHeight()/1.1)-num) {
+                if(sl.getHeight() + sl.getHeight() * 0.33 < num) {
                     stop = true;
                     paint.setColor(Color.WHITE);
-                    paint.setTextSize(30);
-                    canvas.drawText(getResources().getString(R.string.continue_text), canvas.getWidth()*0.1f, canvas.getHeight()/1.1f, paint);
+                    paint.setTextSize(20 * getResources().getDisplayMetrics().density);
+                    canvas.drawText(getResources().getString(R.string.continue_text), x * 0.1f, sl.getHeight() + (int)(y * 0.2), paint);
                 }
+
                 sl.draw(canvas);
+                canvas.restore();
                 ourHolder.unlockCanvasAndPost(canvas);
             }
 
