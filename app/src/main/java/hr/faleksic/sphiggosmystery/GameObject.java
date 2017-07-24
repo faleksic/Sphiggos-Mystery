@@ -32,6 +32,8 @@ public abstract class GameObject {
         return bitmap;
     }
 
+    public void update(int screenWidth, int screenHeight) {}
+
     public void setBitmapName(String bitmapName){
         this.bitmapName = bitmapName;
     }

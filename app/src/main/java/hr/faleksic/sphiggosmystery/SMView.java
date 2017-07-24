@@ -94,89 +94,25 @@ public class SMView extends SurfaceView implements Runnable {
     private void update() {
         //moving sheep in and out of the boat
         if(((Sheep)gameObjects.get(SHEEP_KEY)).isMoving()) {
-            Sheep sheep = (Sheep)gameObjects.get(SHEEP_KEY);
-            if(sheep.isInBoat()) {
-                if(sheep.getPositionX() < screenWidth/1.3) {
-                    sheep.setPositionX(sheep.getPositionX() + (int)(screenWidth*0.005));
-                }
-                if(sheep.getPositionY() > screenHeight*0.1) {
-                    sheep.setPositionY(sheep.getPositionY() - (int)(screenHeight*0.005));
-                }
-                if(sheep.getPositionX() >= screenWidth/1.3 && sheep.getPositionY() <= screenHeight*0.1) {
-                    sheep.setInBoat(false);
-                    sheep.setMoving(false);
-                }
+            gameObjects.get(SHEEP_KEY).update(screenWidth, screenHeight);
 
-            } else {
-                if(sheep.getPositionX() > screenWidth/1.7) {
-                    sheep.setPositionX(sheep.getPositionX() - (int)(screenWidth*0.005));
-                }
-                if(sheep.getPositionY() < screenHeight*0.26) {
-                    sheep.setPositionY(sheep.getPositionY() + (int)(screenHeight*0.005));
-                }
-                if(sheep.getPositionX() <= screenWidth/1.7 && sheep.getPositionY() >= screenHeight*0.26) {
-                    sheep.setInBoat(true);
-                    sheep.setMoving(false);
-                }
-            }
         }
 
         //moving wolf in and out of the boat
         if(((Wolf)gameObjects.get(WOLF_KEY)).isMoving()) {
-            Wolf wolf = (Wolf) gameObjects.get(WOLF_KEY);
-            if(wolf.isInBoat()) {
-                if(wolf.getPositionX() < screenWidth/1.25) {
-                    wolf.setPositionX(wolf.getPositionX() + (int)(screenWidth*0.005));
-                }
-                if(wolf.getPositionY() > screenHeight*0.3) {
-                    wolf.setPositionY(wolf.getPositionY() - (int)(screenHeight*0.005));
-                }
-                if(wolf.getPositionX() >= screenWidth/1.25 && wolf.getPositionY() <= screenHeight*0.3) {
-                    wolf.setInBoat(false);
-                    wolf.setMoving(false);
-                }
+            gameObjects.get(WOLF_KEY).update(screenWidth, screenHeight);
 
-            } else {
-                if(wolf.getPositionX() > screenWidth/1.7) {
-                    wolf.setPositionX(wolf.getPositionX() - (int)(screenWidth*0.005));
-                }
-                if(wolf.getPositionY() < screenHeight*0.26) {
-                    wolf.setPositionY(wolf.getPositionY() + (int)(screenHeight*0.005));
-                }
-                if(wolf.getPositionX() <= screenWidth/1.7 && wolf.getPositionY() >= screenHeight*0.26) {
-                    wolf.setInBoat(true);
-                    wolf.setMoving(false);
-                }
-            }
         }
 
         //moving cabbage in and out of the boat
         if(((Cabbage)gameObjects.get(CABBAGE_KEY)).isMoving()) {
-            Cabbage cabbage = (Cabbage) gameObjects.get(CABBAGE_KEY);
-            if(cabbage.isInBoat()) {
-                if(cabbage.getPositionX() < screenWidth/1.2) {
-                    cabbage.setPositionX(cabbage.getPositionX() + (int)(screenWidth*0.005));
-                }
-                if(cabbage.getPositionY() < screenHeight*0.5) {
-                    cabbage.setPositionY(cabbage.getPositionY() + (int)(screenHeight*0.005));
-                }
-                if(cabbage.getPositionX() >= screenWidth/1.2 && cabbage.getPositionY() >= screenHeight*0.5) {
-                    cabbage.setInBoat(false);
-                    cabbage.setMoving(false);
-                }
+            gameObjects.get(CABBAGE_KEY).update(screenWidth, screenHeight);
 
-            } else {
-                if(cabbage.getPositionX() > screenWidth/1.7) {
-                    cabbage.setPositionX(cabbage.getPositionX() - (int)(screenWidth*0.005));
-                }
-                if(cabbage.getPositionY() > screenHeight*0.26) {
-                    cabbage.setPositionY(cabbage.getPositionY() - (int)(screenHeight*0.005));
-                }
-                if(cabbage.getPositionX() <= screenWidth/1.7 && cabbage.getPositionY() <= screenHeight*0.26) {
-                    cabbage.setInBoat(true);
-                    cabbage.setMoving(false);
-                }
-            }
+        }
+
+        //moving boat
+        if(((Boat)gameObjects.get(BOAT_KEY)).isMoving()) {
+            gameObjects.get(BOAT_KEY).update(screenWidth, screenHeight);
         }
     }
 
@@ -196,6 +132,7 @@ public class SMView extends SurfaceView implements Runnable {
                 }
                 i++;
             }
+
             //checking are rules showed
             if(!showedRules) {
                 if(numClicks > -1) {
@@ -210,9 +147,6 @@ public class SMView extends SurfaceView implements Runnable {
                 }
             }
 
-            if(miniGame) {
-
-            }
             ourHolder.unlockCanvasAndPost(canvas);
         }
     }
@@ -251,7 +185,7 @@ public class SMView extends SurfaceView implements Runnable {
             tp.setAntiAlias(true);
             StaticLayout sl = new StaticLayout(levelManager.getRulesText().get(numClicks), tp,
                     (int) (canvas.getWidth() * 0.9), Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
-            canvas.translate((int) (canvas.getWidth() * 0.05), (int) (canvas.getHeight() - gameObjects.get(RULESBOX_KEY).getHeight() / 1.1));
+            canvas.translate((int)(canvas.getWidth() * 0.05), (int)(canvas.getHeight() - gameObjects.get(RULESBOX_KEY).getHeight() / 1.1));
             sl.draw(canvas);
         }
     }
@@ -295,6 +229,16 @@ public class SMView extends SurfaceView implements Runnable {
         Sheep sheep = ((Sheep) gameObjects.get(SHEEP_KEY));
         if(!(sheep.isInBoat() || sheep.isMoving()) && !(wolf.isInBoat() || wolf.isMoving())) {
             ((Cabbage)gameObjects.get(CABBAGE_KEY)).setMoving(true);
+        }
+    }
+
+    public void moveBoat() {
+        Wolf wolf = ((Wolf)gameObjects.get(WOLF_KEY));
+        Sheep sheep = ((Sheep) gameObjects.get(SHEEP_KEY));
+        Cabbage cabbage = ((Cabbage)gameObjects.get(CABBAGE_KEY));
+
+        if(wolf.isInBoat() || sheep.isInBoat() || cabbage.isInBoat()) {
+            ((Boat)gameObjects.get(BOAT_KEY)).setMoving(true);
         }
     }
 
