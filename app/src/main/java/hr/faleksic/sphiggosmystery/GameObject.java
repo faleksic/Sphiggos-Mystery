@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 public abstract class GameObject {
+
     private float width;
     private float height;
     private int positionX;
@@ -32,7 +33,7 @@ public abstract class GameObject {
         return bitmap;
     }
 
-    public void update(int screenWidth, int screenHeight) {}
+    public void update() {}
 
     public void setBitmapName(String bitmapName){
         this.bitmapName = bitmapName;

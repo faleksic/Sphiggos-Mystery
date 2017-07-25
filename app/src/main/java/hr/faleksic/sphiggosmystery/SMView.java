@@ -94,26 +94,28 @@ public class SMView extends SurfaceView implements Runnable {
     private void update() {
         //moving sheep in and out of the boat
         if(((Sheep)gameObjects.get(SHEEP_KEY)).isMoving()) {
-            gameObjects.get(SHEEP_KEY).update(screenWidth, screenHeight);
+            gameObjects.get(SHEEP_KEY).update();
 
         }
 
         //moving wolf in and out of the boat
         if(((Wolf)gameObjects.get(WOLF_KEY)).isMoving()) {
-            gameObjects.get(WOLF_KEY).update(screenWidth, screenHeight);
+            gameObjects.get(WOLF_KEY).update();
 
         }
 
         //moving cabbage in and out of the boat
         if(((Cabbage)gameObjects.get(CABBAGE_KEY)).isMoving()) {
-            gameObjects.get(CABBAGE_KEY).update(screenWidth, screenHeight);
+            gameObjects.get(CABBAGE_KEY).update();
 
         }
 
         //moving boat
         if(((Boat)gameObjects.get(BOAT_KEY)).isMoving()) {
-            gameObjects.get(BOAT_KEY).update(screenWidth, screenHeight);
+            gameObjects.get(BOAT_KEY).update();
         }
+
+        checkGameOver();
     }
 
     private void draw() {
@@ -211,24 +213,36 @@ public class SMView extends SurfaceView implements Runnable {
     public void moveSheep() {
         Wolf wolf = ((Wolf)gameObjects.get(WOLF_KEY));
         Cabbage cabbage = ((Cabbage)gameObjects.get(CABBAGE_KEY));
-        if(!(wolf.isInBoat() || wolf.isMoving()) && !(cabbage.isInBoat() || cabbage.isMoving())) {
-            ((Sheep) gameObjects.get(SHEEP_KEY)).setMoving(true);
+        Sheep sheep = ((Sheep) gameObjects.get(SHEEP_KEY));
+        Boat boat = ((Boat)gameObjects.get(BOAT_KEY));
+
+        if(!(wolf.isInBoat() || wolf.isMoving()) && !(cabbage.isInBoat() || cabbage.isMoving()) && !boat.isMoving()) {
+            sheep.setMoving(true);
+            sheep.setBoatOnStartSide(boat.isStartingSide());
         }
     }
 
     public void moveWolf() {
         Cabbage cabbage = ((Cabbage)gameObjects.get(CABBAGE_KEY));
         Sheep sheep = ((Sheep) gameObjects.get(SHEEP_KEY));
-        if(!(sheep.isInBoat() || sheep.isMoving()) && !(cabbage.isInBoat() || cabbage.isMoving())) {
-            ((Wolf)gameObjects.get(WOLF_KEY)).setMoving(true);
+        Wolf wolf = ((Wolf)gameObjects.get(WOLF_KEY));
+        Boat boat = ((Boat)gameObjects.get(BOAT_KEY));
+
+        if(!(sheep.isInBoat() || sheep.isMoving()) && !(cabbage.isInBoat() || cabbage.isMoving()) && !boat.isMoving()) {
+            wolf.setMoving(true);
+            wolf.setBoatOnStartSide(boat.isStartingSide());
         }
     }
 
     public void moveCabbage() {
         Wolf wolf = ((Wolf)gameObjects.get(WOLF_KEY));
         Sheep sheep = ((Sheep) gameObjects.get(SHEEP_KEY));
-        if(!(sheep.isInBoat() || sheep.isMoving()) && !(wolf.isInBoat() || wolf.isMoving())) {
-            ((Cabbage)gameObjects.get(CABBAGE_KEY)).setMoving(true);
+        Cabbage cabbage = ((Cabbage)gameObjects.get(CABBAGE_KEY));
+        Boat boat = ((Boat)gameObjects.get(BOAT_KEY));
+
+        if(!(sheep.isInBoat() || sheep.isMoving()) && !(wolf.isInBoat() || wolf.isMoving()) && !boat.isMoving()) {
+            cabbage.setMoving(true);
+            cabbage.setBoatOnStartSide(boat.isStartingSide());
         }
     }
 
@@ -236,10 +250,42 @@ public class SMView extends SurfaceView implements Runnable {
         Wolf wolf = ((Wolf)gameObjects.get(WOLF_KEY));
         Sheep sheep = ((Sheep) gameObjects.get(SHEEP_KEY));
         Cabbage cabbage = ((Cabbage)gameObjects.get(CABBAGE_KEY));
+        Boat boat = ((Boat)gameObjects.get(BOAT_KEY));
 
-        if(wolf.isInBoat() || sheep.isInBoat() || cabbage.isInBoat()) {
-            ((Boat)gameObjects.get(BOAT_KEY)).setMoving(true);
+        if(!sheep.isMoving() && !wolf.isMoving() && !cabbage.isMoving()) {
+            boat.setMoving(true);
         }
+
+        //telling the boat who is inside
+        if(wolf.isInBoat() || sheep.isInBoat() || cabbage.isInBoat()) {
+            if(wolf.isInBoat()) {
+                boat.setPassenger(wolf);
+            } else if(sheep.isInBoat()) {
+                boat.setPassenger(sheep);
+            } else {
+                boat.setPassenger(cabbage);
+            }
+        }
+    }
+
+    private void checkGameOver() {
+        Wolf wolf = ((Wolf)gameObjects.get(WOLF_KEY));
+        Sheep sheep = ((Sheep) gameObjects.get(SHEEP_KEY));
+        Cabbage cabbage = ((Cabbage)gameObjects.get(CABBAGE_KEY));
+
+        if(sheep.isOtherSide() && cabbage.isOtherSide() && !wolf.isOtherSide()) {
+            gameOver();
+        } else if(sheep.isOtherSide() && wolf.isOtherSide() && !cabbage.isOtherSide()) {
+            gameOver();
+        } else if(!sheep.isOtherSide() && !wolf.isOtherSide() && cabbage.isOtherSide()) {
+            gameOver();
+        } else if(!sheep.isOtherSide() && !cabbage.isOtherSide() && wolf.isOtherSide()) {
+            gameOver();
+        }
+    }
+
+    private void gameOver() {
+        Log.e("GAME", "GAME OVER!!!");
     }
 
     public void setNumCLicks(int numCLicks) {
