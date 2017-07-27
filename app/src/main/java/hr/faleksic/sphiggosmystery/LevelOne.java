@@ -19,7 +19,7 @@ public class LevelOne extends LevelData {
         //puting cabbage
         data.put("cabbage", new Cabbage((int)(screenWidth*0.1), (int)(screenHeight*0.1), (int)(screenWidth/1.2), (int)(screenHeight*0.5), screenWidth, screenHeight));
         //puting boat
-        data.put("boat", new Boat((int)(screenWidth*0.3), (int)(screenHeight*0.2), screenWidth/2, (int)(screenHeight*0.2), screenWidth, screenHeight));
+        data.put("boat", new Boat((int)(screenWidth*0.3), (int)(screenHeight*0.2), screenWidth/2, (int)(screenHeight*0.2), screenWidth));
         //puting player
         data.put("player", new Player(context, screenWidth/5, (int)(screenHeight/2.5)));
         //puting doors
@@ -29,5 +29,10 @@ public class LevelOne extends LevelData {
                 screenWidth / 2 - (int)(screenWidth*0.1) / 2, (int) (screenHeight * 0.47)));
         //puting background for writing rules
         data.put("rulesBox", new RulesBox(screenWidth, (int)(screenHeight*0.3), 0, (int)(screenHeight - screenHeight*0.3)));
+        //toxic cloud
+        data.put("toxic", new Toxic(screenWidth, screenHeight, 0, 0));
+        //game over screen
+        data.put("gameOver", new GameOver(screenWidth, screenHeight, 0, 0));
+
     }
 }

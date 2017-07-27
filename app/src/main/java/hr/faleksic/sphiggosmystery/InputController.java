@@ -42,6 +42,8 @@ public class InputController {
                                 sm.moveBoat();
                             }
                     }
+                } else {
+                    sm.killAnimation();
                 }
             }
         }

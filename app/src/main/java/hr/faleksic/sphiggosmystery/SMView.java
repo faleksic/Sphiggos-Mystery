@@ -37,11 +37,16 @@ public class SMView extends SurfaceView implements Runnable {
     private int numClicks = -1;
     private LinkedHashMap<String, GameObject> gameObjects;
     private Bitmap[] bitmaps;
-    private boolean miniGame = false;
+    private boolean miniGame;
+    private boolean kill;
     private Rect frameToDraw;
     private RectF whereToDraw;
     private int screenWidth;
     private int screenHeight;
+    private long time;
+    private int toxicNum = 1;
+    int toxicBitmapIndex = 0;
+
 
     private static final String PLAYER_KEY = "player";
     private static final String SHEEP_KEY = "sheep";
@@ -53,6 +58,8 @@ public class SMView extends SurfaceView implements Runnable {
     private static final String RULESBOX_KEY = "rulesBox";
     private static final String BOAT_KEY = "boat";
     private static final String GAMEONTABLE_KEY = "gameOnTable";
+    private static final String TOXIC_KEY = "toxic";
+    private static final String GAMEOVER_KEY = "gameOver";
 
 
     public SMView(Context context, int screenWidth, int screenHeight) {
@@ -74,6 +81,15 @@ public class SMView extends SurfaceView implements Runnable {
                 gameObjects.get(PLAYER_KEY).getPositionX() + screenWidth / 6,
                 gameObjects.get(PLAYER_KEY).getPositionY() + (int) (screenHeight * 0.405));
         frameToDraw = new Rect(frameWidth*13, frameHeight*3, frameWidth*14, frameHeight*4);
+
+        int i = 0;
+        for(Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
+            if(Objects.equals(go.getKey(), TOXIC_KEY)) {
+                toxicBitmapIndex = i;
+                break;
+            }
+            i++;
+        }
     }
 
     @Override
@@ -115,7 +131,13 @@ public class SMView extends SurfaceView implements Runnable {
             gameObjects.get(BOAT_KEY).update();
         }
 
-        checkGameOver();
+        if(miniGame) {
+            checkGameOver();
+        }
+
+        if(kill) {
+            toxicAnimation();
+        }
     }
 
     private void draw() {
@@ -144,9 +166,14 @@ public class SMView extends SurfaceView implements Runnable {
                         showedRules = true;
                         miniGame = true;
                         gameObjects.get(RULESBOX_KEY).setVisible(false);
-                        showMiniGame();
+                        showMiniGame(true);
                     }
                 }
+            }
+
+            //show game over text if rules are shown, mini game is not true and rules box is visiable
+            if(showedRules && !miniGame && gameObjects.get(RULESBOX_KEY).isVisiable()) {
+                displayGameOverText();
             }
 
             ourHolder.unlockCanvasAndPost(canvas);
@@ -185,26 +212,44 @@ public class SMView extends SurfaceView implements Runnable {
             tp.setColor(Color.BLACK);
             tp.setTextSize(20 * getResources().getDisplayMetrics().density);
             tp.setAntiAlias(true);
-            StaticLayout sl = new StaticLayout(levelManager.getRulesText().get(numClicks), tp,
-                    (int) (canvas.getWidth() * 0.9), Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
-            canvas.translate((int)(canvas.getWidth() * 0.05), (int)(canvas.getHeight() - gameObjects.get(RULESBOX_KEY).getHeight() / 1.1));
-            sl.draw(canvas);
+            if(numClicks < levelManager.getRulesText().size()) {
+                StaticLayout sl = new StaticLayout(levelManager.getRulesText().get(numClicks), tp,
+                        (int) (canvas.getWidth() * 0.9), Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
+                canvas.translate((int) (canvas.getWidth() * 0.05), (int) (canvas.getHeight() - gameObjects.get(RULESBOX_KEY).getHeight() / 1.1));
+                sl.draw(canvas);
+            }
         }
     }
 
-    private void showMiniGame() {
+    private void displayGameOverText() {
+        TextPaint tp = new TextPaint();
+        tp.setColor(Color.RED);
+        tp.setTextSize(20 * getResources().getDisplayMetrics().density);
+        tp.setAntiAlias(true);
+        String packageName = context.getPackageName();
+        StaticLayout sl = new StaticLayout(context.getString(context.getResources().getIdentifier("game_over_text", "string", packageName)), tp,
+                (int) (canvas.getWidth() * 0.9), Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
+        canvas.translate((int)(canvas.getWidth() * 0.05), (int)(canvas.getHeight() - gameObjects.get(RULESBOX_KEY).getHeight() / 1.1));
+        sl.draw(canvas);
+    }
+
+    private void showMiniGame(boolean show) {
         int i = 0;
         for(Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
             if(Objects.equals(go.getKey(), BACKGROUND_KEY)){
-                go.getValue().setBitmapName("game1_background");
+                String background = "game_background";
+                if(show) {
+                    background = "game1_background";
+                }
+                go.getValue().setBitmapName(background);
                 bitmaps[i] = go.getValue().prepareBitmap(context, go.getValue().getBitmapName());
             } else if(Objects.equals(go.getKey(), SHEEP_KEY)
                     || Objects.equals(go.getKey(), WOLF_KEY)
                     || Objects.equals(go.getKey(), CABBAGE_KEY)
                     || Objects.equals(go.getKey(), BOAT_KEY)) {
-                go.getValue().setVisible(true);
+                go.getValue().setVisible(show);
             } else {
-                go.getValue().setVisible(false);
+                go.getValue().setVisible(!show);
             }
             i++;
         }
@@ -253,18 +298,17 @@ public class SMView extends SurfaceView implements Runnable {
         Boat boat = ((Boat)gameObjects.get(BOAT_KEY));
 
         if(!sheep.isMoving() && !wolf.isMoving() && !cabbage.isMoving()) {
-            boat.setMoving(true);
-        }
-
-        //telling the boat who is inside
-        if(wolf.isInBoat() || sheep.isInBoat() || cabbage.isInBoat()) {
-            if(wolf.isInBoat()) {
-                boat.setPassenger(wolf);
-            } else if(sheep.isInBoat()) {
-                boat.setPassenger(sheep);
-            } else {
-                boat.setPassenger(cabbage);
+            //telling the boat who is inside
+            if(wolf.isInBoat() || sheep.isInBoat() || cabbage.isInBoat()) {
+                if(wolf.isInBoat()) {
+                    boat.setPassenger(wolf);
+                } else if(sheep.isInBoat()) {
+                    boat.setPassenger(sheep);
+                } else {
+                    boat.setPassenger(cabbage);
+                }
             }
+            boat.setMoving(true);
         }
     }
 
@@ -285,7 +329,28 @@ public class SMView extends SurfaceView implements Runnable {
     }
 
     private void gameOver() {
-        Log.e("GAME", "GAME OVER!!!");
+        miniGame = false;
+        showMiniGame(false);
+        gameObjects.get(GAMEOVER_KEY).setVisible(false);
+    }
+
+    public void killAnimation() {
+        gameObjects.get(RULESBOX_KEY).setVisible(false);
+        kill = true;
+        time = System.currentTimeMillis();
+    }
+
+    private void toxicAnimation() {
+        if (System.currentTimeMillis() - time > 250) {
+            gameObjects.get(TOXIC_KEY).setBitmapName("toxic" + toxicNum);
+            bitmaps[toxicBitmapIndex] =  gameObjects.get(TOXIC_KEY).prepareBitmap(context,  gameObjects.get(TOXIC_KEY).getBitmapName());
+            toxicNum++;
+            time = System.currentTimeMillis();
+        }
+        if(toxicNum == 11) {
+            kill = false;
+            gameObjects.get(GAMEOVER_KEY).setVisible(true);
+        }
     }
 
     public void setNumCLicks(int numCLicks) {

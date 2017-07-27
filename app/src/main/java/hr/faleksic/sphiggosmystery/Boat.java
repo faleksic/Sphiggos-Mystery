@@ -7,14 +7,12 @@ public class Boat extends GameObject {
     private GameObject passenger;
 
     private int screenWidth;
-    private int screenHeight;
 
     private double speed = 0.005;
     private float startX;
     private float finishX;
 
-    Boat(int width, int height, int positionX, int positionY, int screenWidth, int screenHeight) {
-        this.screenHeight = screenHeight;
+    Boat(int width, int height, int positionX, int positionY, int screenWidth) {
         this.screenWidth = screenWidth;
 
         startX = screenWidth / 2;
