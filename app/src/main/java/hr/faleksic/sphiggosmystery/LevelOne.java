@@ -33,6 +33,11 @@ public class LevelOne extends LevelData {
         data.put("toxic", new Toxic(screenWidth, screenHeight, 0, 0));
         //game over screen
         data.put("gameOver", new GameOver(screenWidth, screenHeight, 0, 0));
-
+        //retry button and retry button clicked
+        data.put("retry", new GameButton("retry", screenWidth / 5, screenHeight / 8, (int)(screenWidth * 0.1), (int)(screenHeight * 0.8)));
+        data.put("retryClick", new GameButton("retry_click", screenWidth / 5, screenHeight / 8, (int)(screenWidth * 0.1), (int)(screenHeight * 0.8)));
+        //quit button and quit button clicked
+        data.put("quit", new GameButton("quit", screenWidth / 5, screenHeight / 8, (int)(screenWidth * 0.7), (int)(screenHeight * 0.8)));
+        data.put("quitClick", new GameButton("quit_click", screenWidth / 5, screenHeight / 8, (int)(screenWidth * 0.7), (int)(screenHeight * 0.8)));
     }
 }

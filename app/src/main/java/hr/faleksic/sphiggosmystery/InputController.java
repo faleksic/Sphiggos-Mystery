@@ -43,7 +43,20 @@ public class InputController {
                             }
                     }
                 } else {
-                    sm.killAnimation();
+                    //if toxic animation is not showed
+                    if(sm.getToxicNum() == 1) {
+                        sm.killAnimation();
+                    } else {
+                        Rect retryButton = new Rect((int)(screenWidth * 0.1), (int)(screenHeight * 0.8),
+                                (int)(screenWidth * 0.1) + screenWidth / 5, (int)(screenHeight * 0.8) + screenHeight / 8);
+                        Rect quitButton = new Rect((int)(screenWidth * 0.7), (int)(screenHeight * 0.8),
+                                (int)(screenWidth * 0.7) + screenWidth / 5, (int)(screenHeight * 0.8) + screenHeight / 8) ;
+                        if (retryButton.contains(x, y)) {
+                            sm.retry();
+                        } else if(quitButton.contains(x, y)) {
+                            sm.quit();
+                        }
+                    }
                 }
             }
         }

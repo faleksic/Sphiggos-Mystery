@@ -77,14 +77,18 @@ public class Wolf extends GameObject {
             }
         } else {
             //if wolf is not on the other side
-            if(!this.otherSide) {
-                if(boatOnStartSide) {
-                    moveToBoat();
+            if(otherSide != boatOnStartSide) {
+                if (!this.otherSide) {
+                    if (boatOnStartSide) {
+                        moveToBoat();
+                    }
+                } else {
+                    if (!boatOnStartSide) {
+                        moveToBoatOtherSide();
+                    }
                 }
             } else {
-                if(!boatOnStartSide) {
-                    moveToBoatOtherSide();
-                }
+                moving = false;
             }
         }
     }

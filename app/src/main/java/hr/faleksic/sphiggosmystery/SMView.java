@@ -1,6 +1,8 @@
 package hr.faleksic.sphiggosmystery;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -60,6 +62,10 @@ public class SMView extends SurfaceView implements Runnable {
     private static final String GAMEONTABLE_KEY = "gameOnTable";
     private static final String TOXIC_KEY = "toxic";
     private static final String GAMEOVER_KEY = "gameOver";
+    private static final String RETRY_KEY = "retry";
+    private static final String RETRYCLICK_KEY = "retryClick";
+    private static final String QUIT_KEY = "quit";
+    private static final String QUITCLICK_KEY = "quitClick";
 
 
     public SMView(Context context, int screenWidth, int screenHeight) {
@@ -90,6 +96,7 @@ public class SMView extends SurfaceView implements Runnable {
             }
             i++;
         }
+        time = System.currentTimeMillis();
     }
 
     @Override
@@ -196,8 +203,11 @@ public class SMView extends SurfaceView implements Runnable {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(levelManager != null) {
-            inputController.handleInput(event, this, levelManager);
+        if(System.currentTimeMillis() - time > 500) {
+            if (levelManager != null) {
+                inputController.handleInput(event, this, levelManager);
+            }
+            time = System.currentTimeMillis();
         }
         return true;
     }
@@ -248,6 +258,13 @@ public class SMView extends SurfaceView implements Runnable {
                     || Objects.equals(go.getKey(), CABBAGE_KEY)
                     || Objects.equals(go.getKey(), BOAT_KEY)) {
                 go.getValue().setVisible(show);
+            } else if(Objects.equals(go.getKey(), GAMEOVER_KEY)
+                    || Objects.equals(go.getKey(), RETRY_KEY)
+                    || Objects.equals(go.getKey(), RETRYCLICK_KEY)
+                    || Objects.equals(go.getKey(), QUIT_KEY)
+                    || Objects.equals(go.getKey(), QUITCLICK_KEY)
+                    || Objects.equals(go.getKey(), TOXIC_KEY)) {
+                go.getValue().setVisible(false);
             } else {
                 go.getValue().setVisible(!show);
             }
@@ -331,13 +348,15 @@ public class SMView extends SurfaceView implements Runnable {
     private void gameOver() {
         miniGame = false;
         showMiniGame(false);
-        gameObjects.get(GAMEOVER_KEY).setVisible(false);
     }
 
     public void killAnimation() {
         gameObjects.get(RULESBOX_KEY).setVisible(false);
         kill = true;
         time = System.currentTimeMillis();
+        gameObjects.get(TOXIC_KEY).setBitmapName("toxic1");
+        bitmaps[toxicBitmapIndex] = gameObjects.get(TOXIC_KEY).prepareBitmap(context, gameObjects.get(TOXIC_KEY).getBitmapName());
+        gameObjects.get(TOXIC_KEY).setVisible(true);
     }
 
     private void toxicAnimation() {
@@ -350,7 +369,24 @@ public class SMView extends SurfaceView implements Runnable {
         if(toxicNum == 11) {
             kill = false;
             gameObjects.get(GAMEOVER_KEY).setVisible(true);
+            gameObjects.get(RETRY_KEY).setVisible(true);
+            gameObjects.get(QUIT_KEY).setVisible(true);
         }
+    }
+
+    public void retry() {
+        gameObjects.put(BOAT_KEY, new Boat((int)(screenWidth*0.3), (int)(screenHeight*0.2), screenWidth/2, (int)(screenHeight*0.2), screenWidth));
+        gameObjects.put(WOLF_KEY, new Wolf((int)(screenWidth*0.15), (int)(screenHeight*0.1), (int)(screenWidth/1.25), (int)(screenHeight*0.3), screenWidth, screenHeight));
+        gameObjects.put(SHEEP_KEY, new Sheep((int)(screenWidth*0.15), (int)(screenHeight*0.1), (int)(screenWidth/1.3), (int)(screenHeight*0.1), screenWidth, screenHeight));
+        gameObjects.put(CABBAGE_KEY, new Cabbage((int)(screenWidth*0.1), (int)(screenHeight*0.1), (int)(screenWidth/1.2), (int)(screenHeight*0.5), screenWidth, screenHeight));
+        showMiniGame(true);
+        miniGame = true;
+        toxicNum = 1;
+    }
+
+    public void quit() {
+        context.startActivity(new Intent(context.getApplicationContext(), MainActivity.class));
+        ((Activity)context).finish();
     }
 
     public void setNumCLicks(int numCLicks) {
@@ -371,5 +407,9 @@ public class SMView extends SurfaceView implements Runnable {
 
     public void setMiniGame(boolean miniGame) {
         this.miniGame = miniGame;
+    }
+
+    public int getToxicNum() {
+        return toxicNum;
     }
 }
