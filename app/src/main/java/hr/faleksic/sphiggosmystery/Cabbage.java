@@ -5,6 +5,7 @@ public class Cabbage extends GameObject {
     private boolean inBoat = false;
     private boolean moving = false;
     private boolean otherSide = false;
+    private boolean startSide = true;
     private boolean boatOnStartSide;
 
     private int screenWidth;
@@ -64,6 +65,10 @@ public class Cabbage extends GameObject {
         return otherSide;
     }
 
+    public boolean isStartSide() {
+        return startSide;
+    }
+
     @Override
     public void update() {
         if(this.isInBoat()) {
@@ -99,6 +104,7 @@ public class Cabbage extends GameObject {
         if(this.getPositionX() >= startingPositionX && this.getPositionY() >= startingPositionY) {
             this.setInBoat(false);
             this.setMoving(false);
+            this.startSide = true;
         }
     }
 
@@ -126,6 +132,7 @@ public class Cabbage extends GameObject {
         if(this.getPositionX() <= boatPositionX && this.getPositionY() <= boatPositionY) {
             this.setInBoat(true);
             this.setMoving(false);
+            this.startSide = false;
         }
     }
 

@@ -48,6 +48,9 @@ public class SMView extends SurfaceView implements Runnable {
     private long time;
     private int toxicNum = 1;
     int toxicBitmapIndex = 0;
+    int doorBitmapIndex = 0;
+    private boolean gameOverText = false;
+    private String whatWasWrong;
 
 
     private static final String PLAYER_KEY = "player";
@@ -92,7 +95,8 @@ public class SMView extends SurfaceView implements Runnable {
         for(Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
             if(Objects.equals(go.getKey(), TOXIC_KEY)) {
                 toxicBitmapIndex = i;
-                break;
+            } else if(Objects.equals(go.getKey(), DOOR_KEY)) {
+                doorBitmapIndex = i;
             }
             i++;
         }
@@ -140,6 +144,7 @@ public class SMView extends SurfaceView implements Runnable {
 
         if(miniGame) {
             checkGameOver();
+            checkWin();
         }
 
         if(kill) {
@@ -179,7 +184,7 @@ public class SMView extends SurfaceView implements Runnable {
             }
 
             //show game over text if rules are shown, mini game is not true and rules box is visiable
-            if(showedRules && !miniGame && gameObjects.get(RULESBOX_KEY).isVisiable()) {
+            if(gameOverText) {
                 displayGameOverText();
             }
 
@@ -203,7 +208,7 @@ public class SMView extends SurfaceView implements Runnable {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(System.currentTimeMillis() - time > 500) {
+        if(System.currentTimeMillis() - time > 200) {
             if (levelManager != null) {
                 inputController.handleInput(event, this, levelManager);
             }
@@ -237,7 +242,9 @@ public class SMView extends SurfaceView implements Runnable {
         tp.setTextSize(20 * getResources().getDisplayMetrics().density);
         tp.setAntiAlias(true);
         String packageName = context.getPackageName();
-        StaticLayout sl = new StaticLayout(context.getString(context.getResources().getIdentifier("game_over_text", "string", packageName)), tp,
+        String text = whatWasWrong;
+        text += context.getString(context.getResources().getIdentifier("game_over_text", "string", packageName));
+        StaticLayout sl = new StaticLayout(text, tp,
                 (int) (canvas.getWidth() * 0.9), Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
         canvas.translate((int)(canvas.getWidth() * 0.05), (int)(canvas.getHeight() - gameObjects.get(RULESBOX_KEY).getHeight() / 1.1));
         sl.draw(canvas);
@@ -333,26 +340,42 @@ public class SMView extends SurfaceView implements Runnable {
         Wolf wolf = ((Wolf)gameObjects.get(WOLF_KEY));
         Sheep sheep = ((Sheep) gameObjects.get(SHEEP_KEY));
         Cabbage cabbage = ((Cabbage)gameObjects.get(CABBAGE_KEY));
+        Boat boat = ((Boat)gameObjects.get(BOAT_KEY));
+        String packageName = context.getPackageName();
 
-        if(sheep.isOtherSide() && cabbage.isOtherSide() && !wolf.isOtherSide()) {
+        if(sheep.isOtherSide() && cabbage.isOtherSide() && ((wolf.isInBoat() && boat.isStartingSide()) || (wolf.isStartSide() && boat.isStartingSide()))) {
+            whatWasWrong = context.getString(context.getResources().getIdentifier("game_over_sheep_cabbage", "string", packageName));
             gameOver();
-        } else if(sheep.isOtherSide() && wolf.isOtherSide() && !cabbage.isOtherSide()) {
+        } else if(sheep.isOtherSide() && wolf.isOtherSide() && ((cabbage.isInBoat() && boat.isStartingSide()) || (cabbage.isStartSide() && boat.isStartingSide()))) {
+            whatWasWrong = context.getString(context.getResources().getIdentifier("game_over_wolf_sheep", "string", packageName));
             gameOver();
-        } else if(!sheep.isOtherSide() && !wolf.isOtherSide() && cabbage.isOtherSide()) {
+        } else if(sheep.isStartSide() && wolf.isStartSide() && ((cabbage.isInBoat() && !boat.isStartingSide()) || (cabbage.isOtherSide() && !boat.isStartingSide()))) {
+            whatWasWrong = context.getString(context.getResources().getIdentifier("game_over_wolf_sheep", "string", packageName));
             gameOver();
-        } else if(!sheep.isOtherSide() && !cabbage.isOtherSide() && wolf.isOtherSide()) {
+        } else if(sheep.isStartSide() && cabbage.isStartSide() && ((wolf.isInBoat() && !boat.isStartingSide()) || (wolf.isOtherSide() && !boat.isStartingSide()))) {
             gameOver();
+            whatWasWrong = context.getString(context.getResources().getIdentifier("game_over_sheep_cabbage", "string", packageName));
         }
     }
+    private void checkWin() {
+        Wolf wolf = ((Wolf) gameObjects.get(WOLF_KEY));
+        Sheep sheep = ((Sheep) gameObjects.get(SHEEP_KEY));
+        Cabbage cabbage = ((Cabbage) gameObjects.get(CABBAGE_KEY));
 
+        if(sheep.isOtherSide() && cabbage.isOtherSide() && wolf.isOtherSide()) {
+            openDoor();
+        }
+    }
     private void gameOver() {
         miniGame = false;
+        gameOverText = true;
         showMiniGame(false);
     }
 
     public void killAnimation() {
         gameObjects.get(RULESBOX_KEY).setVisible(false);
         kill = true;
+        gameOverText = false;
         time = System.currentTimeMillis();
         gameObjects.get(TOXIC_KEY).setBitmapName("toxic1");
         bitmaps[toxicBitmapIndex] = gameObjects.get(TOXIC_KEY).prepareBitmap(context, gameObjects.get(TOXIC_KEY).getBitmapName());
@@ -372,6 +395,14 @@ public class SMView extends SurfaceView implements Runnable {
             gameObjects.get(RETRY_KEY).setVisible(true);
             gameObjects.get(QUIT_KEY).setVisible(true);
         }
+    }
+
+    private void openDoor() {
+        miniGame = false;
+        gameObjects.get(DOOR_KEY).setBitmapName("door_opened");
+        gameObjects.get(DOOR_KEY).setHeight((int)(screenHeight*0.415));
+        bitmaps[doorBitmapIndex] = gameObjects.get(DOOR_KEY).prepareBitmap(context, gameObjects.get(DOOR_KEY).getBitmapName());
+        showMiniGame(false);
     }
 
     public void retry() {
@@ -411,5 +442,9 @@ public class SMView extends SurfaceView implements Runnable {
 
     public int getToxicNum() {
         return toxicNum;
+    }
+
+    public boolean isGameOverText() {
+        return gameOverText;
     }
 }

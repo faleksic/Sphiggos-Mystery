@@ -44,7 +44,7 @@ public class InputController {
                     }
                 } else {
                     //if toxic animation is not showed
-                    if(sm.getToxicNum() == 1) {
+                    if(sm.getToxicNum() == 1 && sm.isGameOverText()) {
                         sm.killAnimation();
                     } else {
                         Rect retryButton = new Rect((int)(screenWidth * 0.1), (int)(screenHeight * 0.8),
