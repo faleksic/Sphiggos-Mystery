@@ -46,7 +46,7 @@ public class InputController {
                     //if toxic animation is not showed
                     if(sm.getToxicNum() == 1 && sm.isGameOverText()) {
                         sm.killAnimation();
-                    } else {
+                    } else if(!sm.isPassedTest()){
                         Rect retryButton = new Rect((int)(screenWidth * 0.1), (int)(screenHeight * 0.8),
                                 (int)(screenWidth * 0.1) + screenWidth / 5, (int)(screenHeight * 0.8) + screenHeight / 8);
                         Rect quitButton = new Rect((int)(screenWidth * 0.7), (int)(screenHeight * 0.8),
@@ -55,6 +55,12 @@ public class InputController {
                             sm.retry();
                         } else if(quitButton.contains(x, y)) {
                             sm.quit();
+                        }
+                    } else {
+                        Rect door = new Rect( screenWidth / 2 - (int)(screenWidth*0.1), 0,
+                                screenWidth / 2 - (int)(screenWidth*0.1) + (int)(screenWidth*0.2), (int)(screenHeight*0.42));
+                        if(door.contains(x, y)) {
+                            Log.e("HODOR", "HODOR");
                         }
                     }
                 }

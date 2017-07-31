@@ -23,7 +23,7 @@ public class LevelOne extends LevelData {
         //puting player
         data.put("player", new Player(context, screenWidth/5, (int)(screenHeight/2.5)));
         //puting doors
-        data.put("door", new Door((int)(screenWidth*0.2), (int)(screenHeight*0.405), screenWidth / 2 - (int)(screenWidth*0.2) / 2, 0));
+        data.put("door", new Door((int)(screenWidth*0.2), (int)(screenHeight*0.405), screenWidth / 2 - (int)(screenWidth*0.1), 0));
         //puting game on table
         data.put("gameOnTable", new GameOnTable("game1", (int)(screenWidth*0.1), (int)(screenHeight*0.15),
                 screenWidth / 2 - (int)(screenWidth*0.1) / 2, (int) (screenHeight * 0.47)));

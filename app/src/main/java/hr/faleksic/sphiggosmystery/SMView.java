@@ -50,6 +50,7 @@ public class SMView extends SurfaceView implements Runnable {
     int toxicBitmapIndex = 0;
     int doorBitmapIndex = 0;
     private boolean gameOverText = false;
+    private boolean passedTest = false;
     private String whatWasWrong;
 
 
@@ -188,6 +189,10 @@ public class SMView extends SurfaceView implements Runnable {
                 displayGameOverText();
             }
 
+            if(passedTest) {
+                displayWinText();
+            }
+
             ourHolder.unlockCanvasAndPost(canvas);
         }
     }
@@ -244,6 +249,18 @@ public class SMView extends SurfaceView implements Runnable {
         String packageName = context.getPackageName();
         String text = whatWasWrong;
         text += context.getString(context.getResources().getIdentifier("game_over_text", "string", packageName));
+        StaticLayout sl = new StaticLayout(text, tp,
+                (int) (canvas.getWidth() * 0.9), Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
+        canvas.translate((int)(canvas.getWidth() * 0.05), (int)(canvas.getHeight() - gameObjects.get(RULESBOX_KEY).getHeight() / 1.1));
+        sl.draw(canvas);
+    }
+
+    private void displayWinText() {
+        TextPaint tp = new TextPaint();
+        tp.setColor(Color.argb(1, 0, 100, 0));
+        tp.setTextSize(20 * getResources().getDisplayMetrics().density);
+        tp.setAntiAlias(true);
+        String text = context.getString(context.getResources().getIdentifier("win_text", "string", context.getPackageName()));
         StaticLayout sl = new StaticLayout(text, tp,
                 (int) (canvas.getWidth() * 0.9), Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
         canvas.translate((int)(canvas.getWidth() * 0.05), (int)(canvas.getHeight() - gameObjects.get(RULESBOX_KEY).getHeight() / 1.1));
@@ -400,7 +417,8 @@ public class SMView extends SurfaceView implements Runnable {
     private void openDoor() {
         miniGame = false;
         gameObjects.get(DOOR_KEY).setBitmapName("door_opened");
-        gameObjects.get(DOOR_KEY).setHeight((int)(screenHeight*0.415));
+        gameObjects.get(DOOR_KEY).setHeight((int)(screenHeight*0.425));
+        passedTest = true;
         bitmaps[doorBitmapIndex] = gameObjects.get(DOOR_KEY).prepareBitmap(context, gameObjects.get(DOOR_KEY).getBitmapName());
         showMiniGame(false);
     }
@@ -413,6 +431,7 @@ public class SMView extends SurfaceView implements Runnable {
         showMiniGame(true);
         miniGame = true;
         toxicNum = 1;
+        passedTest = false;
     }
 
     public void quit() {
@@ -446,5 +465,9 @@ public class SMView extends SurfaceView implements Runnable {
 
     public boolean isGameOverText() {
         return gameOverText;
+    }
+
+    public boolean isPassedTest() {
+        return passedTest;
     }
 }
