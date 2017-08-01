@@ -120,36 +120,44 @@ public class SMView extends SurfaceView implements Runnable {
     }
 
     private void update() {
-        //moving sheep in and out of the boat
-        if(((Sheep)gameObjects.get(SHEEP_KEY)).isMoving()) {
-            gameObjects.get(SHEEP_KEY).update();
+        switch (levelManager.getLevel()) {
+            case 1: {
+                //moving sheep in and out of the boat
+                if (((Sheep) gameObjects.get(SHEEP_KEY)).isMoving()) {
+                    gameObjects.get(SHEEP_KEY).update();
 
-        }
+                }
 
-        //moving wolf in and out of the boat
-        if(((Wolf)gameObjects.get(WOLF_KEY)).isMoving()) {
-            gameObjects.get(WOLF_KEY).update();
+                //moving wolf in and out of the boat
+                if (((Wolf) gameObjects.get(WOLF_KEY)).isMoving()) {
+                    gameObjects.get(WOLF_KEY).update();
 
-        }
+                }
 
-        //moving cabbage in and out of the boat
-        if(((Cabbage)gameObjects.get(CABBAGE_KEY)).isMoving()) {
-            gameObjects.get(CABBAGE_KEY).update();
+                //moving cabbage in and out of the boat
+                if (((Cabbage) gameObjects.get(CABBAGE_KEY)).isMoving()) {
+                    gameObjects.get(CABBAGE_KEY).update();
 
-        }
+                }
 
-        //moving boat
-        if(((Boat)gameObjects.get(BOAT_KEY)).isMoving()) {
-            gameObjects.get(BOAT_KEY).update();
-        }
+                //moving boat
+                if (((Boat) gameObjects.get(BOAT_KEY)).isMoving()) {
+                    gameObjects.get(BOAT_KEY).update();
+                }
 
-        if(miniGame) {
-            checkGameOver();
-            checkWin();
-        }
+                if (miniGame) {
+                    checkGameOver();
+                    checkWin();
+                }
 
-        if(kill) {
-            toxicAnimation();
+                if (kill) {
+                    toxicAnimation();
+                }
+                break;
+            } case 2: {
+
+                break;
+            }
         }
     }
 
@@ -234,7 +242,7 @@ public class SMView extends SurfaceView implements Runnable {
             tp.setAntiAlias(true);
             if(numClicks < levelManager.getRulesText().size()) {
                 StaticLayout sl = new StaticLayout(levelManager.getRulesText().get(numClicks), tp,
-                        (int) (canvas.getWidth() * 0.9), Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
+                        (int) (canvas.getWidth() * 0.85), Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
                 canvas.translate((int) (canvas.getWidth() * 0.05), (int) (canvas.getHeight() - gameObjects.get(RULESBOX_KEY).getHeight() / 1.1));
                 sl.draw(canvas);
             }
@@ -268,31 +276,61 @@ public class SMView extends SurfaceView implements Runnable {
     }
 
     private void showMiniGame(boolean show) {
-        int i = 0;
-        for(Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
-            if(Objects.equals(go.getKey(), BACKGROUND_KEY)){
-                String background = "game_background";
-                if(show) {
-                    background = "game1_background";
+        switch (levelManager.getLevel()) {
+            case 1: {
+                int i = 0;
+                for (Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
+                    if (Objects.equals(go.getKey(), BACKGROUND_KEY)) {
+                        String background = "game_background";
+                        if (show) {
+                            background = "game1_background";
+                        }
+                        go.getValue().setBitmapName(background);
+                        bitmaps[i] = go.getValue().prepareBitmap(context, go.getValue().getBitmapName());
+                    } else if (Objects.equals(go.getKey(), SHEEP_KEY)
+                            || Objects.equals(go.getKey(), WOLF_KEY)
+                            || Objects.equals(go.getKey(), CABBAGE_KEY)
+                            || Objects.equals(go.getKey(), BOAT_KEY)) {
+                        go.getValue().setVisible(show);
+                    } else if (Objects.equals(go.getKey(), GAMEOVER_KEY)
+                            || Objects.equals(go.getKey(), RETRY_KEY)
+                            || Objects.equals(go.getKey(), RETRYCLICK_KEY)
+                            || Objects.equals(go.getKey(), QUIT_KEY)
+                            || Objects.equals(go.getKey(), QUITCLICK_KEY)
+                            || Objects.equals(go.getKey(), TOXIC_KEY)) {
+                        go.getValue().setVisible(false);
+                    } else {
+                        go.getValue().setVisible(!show);
+                    }
+                    i++;
                 }
-                go.getValue().setBitmapName(background);
-                bitmaps[i] = go.getValue().prepareBitmap(context, go.getValue().getBitmapName());
-            } else if(Objects.equals(go.getKey(), SHEEP_KEY)
-                    || Objects.equals(go.getKey(), WOLF_KEY)
-                    || Objects.equals(go.getKey(), CABBAGE_KEY)
-                    || Objects.equals(go.getKey(), BOAT_KEY)) {
-                go.getValue().setVisible(show);
-            } else if(Objects.equals(go.getKey(), GAMEOVER_KEY)
-                    || Objects.equals(go.getKey(), RETRY_KEY)
-                    || Objects.equals(go.getKey(), RETRYCLICK_KEY)
-                    || Objects.equals(go.getKey(), QUIT_KEY)
-                    || Objects.equals(go.getKey(), QUITCLICK_KEY)
-                    || Objects.equals(go.getKey(), TOXIC_KEY)) {
-                go.getValue().setVisible(false);
-            } else {
-                go.getValue().setVisible(!show);
+                break;
+            } case 2: {
+                int i = 0;
+                for (Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
+                    if (Objects.equals(go.getKey(), BACKGROUND_KEY)) {
+                        String background = "game_background";
+                        if (show) {
+                            background = "game2_background";
+                        }
+                        go.getValue().setBitmapName(background);
+                        bitmaps[i] = go.getValue().prepareBitmap(context, go.getValue().getBitmapName());
+                    } else if (Objects.equals(go.getKey(), SHEEP_KEY)) {
+                        go.getValue().setVisible(show);
+                    } else if (Objects.equals(go.getKey(), GAMEOVER_KEY)
+                            || Objects.equals(go.getKey(), RETRY_KEY)
+                            || Objects.equals(go.getKey(), RETRYCLICK_KEY)
+                            || Objects.equals(go.getKey(), QUIT_KEY)
+                            || Objects.equals(go.getKey(), QUITCLICK_KEY)
+                            || Objects.equals(go.getKey(), TOXIC_KEY)) {
+                        go.getValue().setVisible(false);
+                    } else {
+                        go.getValue().setVisible(!show);
+                    }
+                    i++;
+                }
+                break;
             }
-            i++;
         }
     }
 
@@ -382,6 +420,14 @@ public class SMView extends SurfaceView implements Runnable {
         if(sheep.isOtherSide() && cabbage.isOtherSide() && wolf.isOtherSide()) {
             openDoor();
         }
+    }
+
+    public void startLevel() {
+        numClicks = -1;
+        levelManager = new LevelManager(context, levelManager.getLevel()+1, screenWidth, screenHeight);
+        miniGame = false;
+        toxicNum = 1;
+        passedTest = false;
     }
     private void gameOver() {
         miniGame = false;

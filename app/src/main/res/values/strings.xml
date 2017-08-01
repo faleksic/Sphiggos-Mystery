@@ -5,6 +5,8 @@
     <string name="play">play</string>
     <string name="skip">skip</string>
     <string name="continue_text">Tap to continue&#8230;</string>
+
+    <!-- LEVEL ONE -->
     <string name="al_one_rule_1">Al: Finally you are awake. Here is my task!</string>
     <string name="al_one_rule_2">You are with a wolf, a sheep and some cabbage. You want to transfer all three to the other side.</string>
     <string name="al_one_rule_3">Unfortunately, only you and someone else can fit inside of the boat at the same time. You can transfer one by one but there are some problems.</string>
@@ -13,6 +15,13 @@
     <string name="al_one_rule_6">How will you transfer everybody safely to the other side?</string>
     <string name="game_over_wolf_sheep">Sphiggo: You left sheep alone with the wolf! </string>
     <string name="game_over_sheep_cabbage">Sphiggo: You left cabbage alone with the sheep! </string>
+
+    <!-- LEVEL TWO -->
+    <string name="matt_one_rule_1">Matt: Welcome to level two! I am surprised that Al\'s puzzle didn\'t kill you.</string>
+    <string name="matt_one_rule_2">If you want to beat me, you will need to use your math knowledge. I hope you paid attention in school!</string>
+    <string name="matt_one_rule_3">Riddle is written on paper in front of you.</string>
+    <string name="matt_one_rule_4">When you think you know the answer write it down and discover how smart you are!</string>
+
     <string name="game_over_text">Your answer is wrong! Now you will suffer!</string>
     <string name="win_text">Sphiggo: Your answer is correct. Go trough that open door to get to the next level!</string>
     <string name="intro">

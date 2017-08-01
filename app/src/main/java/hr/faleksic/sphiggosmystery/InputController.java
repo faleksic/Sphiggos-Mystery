@@ -41,6 +41,8 @@ public class InputController {
                             } else if(boatButton.contains(x, y)) {
                                 sm.moveBoat();
                             }
+
+                            break;
                     }
                 } else {
                     //if toxic animation is not showed
@@ -60,7 +62,7 @@ public class InputController {
                         Rect door = new Rect( screenWidth / 2 - (int)(screenWidth*0.1), 0,
                                 screenWidth / 2 - (int)(screenWidth*0.1) + (int)(screenWidth*0.2), (int)(screenHeight*0.42));
                         if(door.contains(x, y)) {
-                            Log.e("HODOR", "HODOR");
+                            sm.startLevel();
                         }
                     }
                 }

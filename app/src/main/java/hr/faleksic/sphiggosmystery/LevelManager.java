@@ -28,13 +28,22 @@ public class LevelManager {
         switch (level) {
             case 1: {
                 levelData = new LevelOne(context, screenWidth, screenHeight);
-                for (int i = 1; i < 6; i++) {
+                for (int i = 1; i < 7; i++) {
                     rulesText.add(getStringResourceByName("al_one_rule_" + String.valueOf(i)));
                 }
                 gameObjects = levelData.data;
                 bitmaps = new Bitmap[gameObjects.size()];
                 break;
+            } case 2: {
+                levelData = new LevelTwo(context, screenWidth, screenHeight);
+                for (int i = 1; i < 5; i++) {
+                    rulesText.add(getStringResourceByName("matt_one_rule_" + String.valueOf(i)));
+                }
+                gameObjects = levelData.data;
+                bitmaps = new Bitmap[gameObjects.size()];
+                break;
             }
+
         }
 
         prepareLevel();
