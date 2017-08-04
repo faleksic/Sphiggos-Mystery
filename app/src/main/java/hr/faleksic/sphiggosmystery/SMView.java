@@ -1,5 +1,6 @@
 package hr.faleksic.sphiggosmystery;
 
+import android.accessibilityservice.AccessibilityService;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -9,13 +10,18 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.text.InputType;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -92,16 +98,30 @@ public class SMView extends SurfaceView implements Runnable {
                 gameObjects.get(PLAYER_KEY).getPositionY() + (int) (screenHeight * 0.405));
         frameToDraw = new Rect(frameWidth*13, frameHeight*3, frameWidth*14, frameHeight*4);
 
-        int i = 0;
-        for(Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
-            if(Objects.equals(go.getKey(), TOXIC_KEY)) {
-                toxicBitmapIndex = i;
-            } else if(Objects.equals(go.getKey(), DOOR_KEY)) {
-                doorBitmapIndex = i;
-            }
-            i++;
-        }
+
         time = System.currentTimeMillis();
+
+        //TODO REMOVE THIS FOR PRODUCTION
+        if(debugging) {
+            startLevel();
+        }
+
+        switch (levelManager.getLevel()) {
+            case 1: {
+                int i = 0;
+                for(Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
+                    if(Objects.equals(go.getKey(), TOXIC_KEY)) {
+                        toxicBitmapIndex = i;
+                    } else if(Objects.equals(go.getKey(), DOOR_KEY)) {
+                        doorBitmapIndex = i;
+                    }
+                    i++;
+                }
+                break;
+            } case 2: {
+                
+            }
+        }
     }
 
     @Override
@@ -188,6 +208,32 @@ public class SMView extends SurfaceView implements Runnable {
                         miniGame = true;
                         gameObjects.get(RULESBOX_KEY).setVisible(false);
                         showMiniGame(true);
+                        final EditText editText = (EditText)((Activity)context).findViewById(R.id.level2_edit_text);
+                        ((Activity)context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                editText.setVisibility(View.VISIBLE);
+                                editText.setOnClickListener(new OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        pause();
+                                    }
+                                });
+                                editText.setOnKeyListener(new OnKeyListener() {
+                                    @Override
+                                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                                        if((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)){
+                                            resume();
+                                            InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                                            return true;
+                                        }
+                                        return false;
+                                    }
+                                });
+                            }
+                        });
+
                     }
                 }
             }
@@ -213,6 +259,7 @@ public class SMView extends SurfaceView implements Runnable {
             Log.e(SMView.class.getSimpleName(), "Failed to pause thread");
         }
     }
+
     public void resume() {
         running = true;
         gameThread = new Thread(this);
@@ -256,7 +303,7 @@ public class SMView extends SurfaceView implements Runnable {
         tp.setAntiAlias(true);
         String packageName = context.getPackageName();
         String text = whatWasWrong;
-        text += context.getString(context.getResources().getIdentifier("game_over_text", "string", packageName));
+        text += " " + context.getString(context.getResources().getIdentifier("game_over_text", "string", packageName));
         StaticLayout sl = new StaticLayout(text, tp,
                 (int) (canvas.getWidth() * 0.9), Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
         canvas.translate((int)(canvas.getWidth() * 0.05), (int)(canvas.getHeight() - gameObjects.get(RULESBOX_KEY).getHeight() / 1.1));
@@ -265,7 +312,7 @@ public class SMView extends SurfaceView implements Runnable {
 
     private void displayWinText() {
         TextPaint tp = new TextPaint();
-        tp.setColor(Color.argb(1, 0, 100, 0));
+        tp.setColor(Color.rgb(0, 200, 0));
         tp.setTextSize(20 * getResources().getDisplayMetrics().density);
         tp.setAntiAlias(true);
         String text = context.getString(context.getResources().getIdentifier("win_text", "string", context.getPackageName()));
@@ -428,6 +475,9 @@ public class SMView extends SurfaceView implements Runnable {
         miniGame = false;
         toxicNum = 1;
         passedTest = false;
+        showedRules = false;
+        this.gameObjects = levelManager.getGameObjects();
+        this.bitmaps = levelManager.getBitmaps();
     }
     private void gameOver() {
         miniGame = false;
