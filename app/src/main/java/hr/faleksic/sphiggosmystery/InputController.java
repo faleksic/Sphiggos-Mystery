@@ -23,7 +23,7 @@ public class InputController {
                     sm.setNumCLicks(sm.getNumCLicks() + 1);
                 } else if (sm.isMiniGame()) {
                     switch (lm.getLevel()) {
-                        case 1:
+                        case 1: {
                             Rect sheepButton = new Rect((int) (screenWidth * 0.12), (int) (screenHeight * 0.74),
                                     (int) (screenWidth * 0.26), screenHeight);
                             Rect wolfButton = new Rect((int) (screenWidth * 0.3), (int) (screenHeight * 0.74),
@@ -34,15 +34,16 @@ public class InputController {
                                     (int) (screenWidth * 0.8), screenHeight);
                             if (sheepButton.contains(x, y)) {
                                 sm.moveSheep();
-                            } else if(wolfButton.contains(x, y)) {
+                            } else if (wolfButton.contains(x, y)) {
                                 sm.moveWolf();
-                            } else if(cabbageButton.contains(x, y)) {
+                            } else if (cabbageButton.contains(x, y)) {
                                 sm.moveCabbage();
-                            } else if(boatButton.contains(x, y)) {
+                            } else if (boatButton.contains(x, y)) {
                                 sm.moveBoat();
                             }
 
                             break;
+                        }
                     }
                 } else {
                     //if toxic animation is not showed

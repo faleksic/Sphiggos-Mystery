@@ -17,10 +17,13 @@
     <string name="game_over_sheep_cabbage">Sphiggo: You left cabbage alone with the sheep! </string>
 
     <!-- LEVEL TWO -->
+    <string name="level2_hint">Enter passcode</string>
     <string name="matt_one_rule_1">Matt: Welcome to level two! I am surprised that Al\'s puzzle didn\'t kill you.</string>
     <string name="matt_one_rule_2">If you want to beat me, you will need to use your math knowledge. I hope you paid attention in school!</string>
     <string name="matt_one_rule_3">Riddle is written on paper in front of you.</string>
     <string name="matt_one_rule_4">When you think you know the answer write it down and discover how smart you are!</string>
+    <string name="level2_answer">229</string>
+    <string name="game_over_wrong_passcode">Sphiggo: The passcode is incorrect!</string>
 
     <string name="game_over_text">Your answer is wrong! Now you will suffer!</string>
     <string name="win_text">Sphiggo: Your answer is correct. Go trough that open door to get to the next level!</string>

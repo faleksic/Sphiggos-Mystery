@@ -51,7 +51,7 @@ public class LevelManager {
 
     private void prepareLevel() {
         int i = 0;
-        for(Map.Entry<String, GameObject> go : gameObjects.entrySet()){
+        for(Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
             bitmaps[i] = go.getValue().prepareBitmap(context, go.getValue().getBitmapName());
             i++;
         }

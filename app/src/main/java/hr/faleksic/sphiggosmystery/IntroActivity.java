@@ -6,8 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
@@ -18,11 +16,6 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.TextView;
 
 public class IntroActivity extends AppCompatActivity {
 
@@ -41,13 +34,18 @@ public class IntroActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        introScroll.resume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         introScroll.pause();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        introScroll.resume();
     }
 
     private class IntroScroll extends SurfaceView implements Runnable{
@@ -72,6 +70,7 @@ public class IntroActivity extends AppCompatActivity {
             ourHolder = getHolder();
             paint = new Paint();
             stop = false;
+            running = false;
             this.x = screenWidth;
             this.y = screenHeight;
         }
@@ -101,32 +100,33 @@ public class IntroActivity extends AppCompatActivity {
                 paint.setColor(Color.BLACK);
                 paint.setAntiAlias(true);
                 paint.setStyle(Paint.Style.FILL);
-                canvas.drawPaint(paint);
-                TextPaint tp = new TextPaint();
-                tp.setColor(Color.WHITE);
-                tp.setTextSize(20 * getResources().getDisplayMetrics().density);
-                tp.setTextAlign(Paint.Align.CENTER);
-                tp.setAntiAlias(true);
+
+                if(canvas != null) {
+                    canvas.drawPaint(paint);
+                    TextPaint tp = new TextPaint();
+                    tp.setColor(Color.WHITE);
+                    tp.setTextSize(20 * getResources().getDisplayMetrics().density);
+                    tp.setTextAlign(Paint.Align.CENTER);
+                    tp.setAntiAlias(true);
 
 
-                StaticLayout sl = new StaticLayout(getResources().getString(R.string.intro), tp,
-                        (int)(canvas.getWidth() / 1.33), Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
+                    StaticLayout sl = new StaticLayout(getResources().getString(R.string.intro), tp,
+                            (int) (canvas.getWidth() / 1.33), Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
 
-                canvas.save();
 
-                canvas.translate(canvas.getWidth() / 2, (int)(canvas.getHeight() / 1.1) - num);
+                    canvas.translate(canvas.getWidth() / 2, (int) (canvas.getHeight() / 1.1) - num);
 
-                //if the y translate coordinate is higher than canvas height minus static layout minus 3/2 of the layout than stop text scroll
-                if(sl.getHeight() + sl.getHeight() * 0.33 < num) {
-                    stop = true;
-                    paint.setColor(Color.WHITE);
-                    paint.setTextSize(20 * getResources().getDisplayMetrics().density);
-                    canvas.drawText(getResources().getString(R.string.continue_text), x * 0.1f, sl.getHeight() + (int)(y * 0.2), paint);
+                    //if the y translate coordinate is higher than canvas height minus static layout minus 3/2 of the layout than stop text scroll
+                    if (sl.getHeight() + sl.getHeight() * 0.33 < num) {
+                        stop = true;
+                        paint.setColor(Color.WHITE);
+                        paint.setTextSize(20 * getResources().getDisplayMetrics().density);
+                        canvas.drawText(getResources().getString(R.string.continue_text), x * 0.1f, sl.getHeight() + (int) (y * 0.2), paint);
+                    }
+
+                    sl.draw(canvas);
+                    ourHolder.unlockCanvasAndPost(canvas);
                 }
-
-                sl.draw(canvas);
-                canvas.restore();
-                ourHolder.unlockCanvasAndPost(canvas);
             }
 
         }
@@ -135,7 +135,7 @@ public class IntroActivity extends AppCompatActivity {
             try {
                 gameThread.join();
             } catch (InterruptedException e) {
-                Log.e(SMView.class.getSimpleName(), "Failed to pause thread");
+                Log.e(IntroActivity.class.getSimpleName(), "Failed to pause thread");
             }
         }
         public void resume() {
