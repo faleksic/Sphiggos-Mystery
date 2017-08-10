@@ -20,7 +20,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -57,6 +56,8 @@ public class SMView extends SurfaceView implements Runnable {
     private boolean gameOverText = false;
     private boolean passedTest = false;
     private String whatWasWrong;
+    private boolean wrongPasscode = false;
+    private boolean correctPasscode = false;
 
 
     private static final String PLAYER_KEY = "player";
@@ -101,9 +102,9 @@ public class SMView extends SurfaceView implements Runnable {
         time = System.currentTimeMillis();
 
         //TODO REMOVE THIS FOR PRODUCTION
-        if(debugging) {
+        /*if(debugging) {
             startLevel();
-        }
+        }*/
 
         int i = 0;
         for(Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
@@ -171,6 +172,16 @@ public class SMView extends SurfaceView implements Runnable {
                 if (kill) {
                     toxicAnimation();
                 }
+
+                if(wrongPasscode) {
+                    gameOver();
+                    wrongPasscode = false;
+                }
+
+                if(correctPasscode) {
+                    openDoor();
+                    correctPasscode = false;
+                }
                 break;
             }
         }
@@ -203,41 +214,35 @@ public class SMView extends SurfaceView implements Runnable {
                         miniGame = true;
                         gameObjects.get(RULESBOX_KEY).setVisible(false);
                         showMiniGame(true);
-                        final EditText editText = (EditText)((Activity)context).findViewById(R.id.level2_edit_text);
-                        ((Activity)context).runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                editText.setVisibility(View.VISIBLE);
-                                editText.setOnKeyListener(new OnKeyListener() {
-                                    @Override
-                                    public boolean onKey(View v, int keyCode, KeyEvent event) {
-                                        if((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)){
-                                            InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                                            imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-                                            if(!Objects.equals(editText.getText().toString(), getResources().getString(R.string.level2_answer))) {
-                                                whatWasWrong = getResources().getString(R.string.game_over_wrong_passcode);
-                                                editText.setVisibility(GONE);
-                                                gameOver();
-                                            } else {
-                                                editText.setVisibility(GONE);
-                                                openDoor();
+                        if(levelManager.getLevel() == 2) {
+                            final EditText editText = (EditText) ((Activity) context).findViewById(R.id.level2_edit_text);
+                            ((Activity) context).runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    editText.setVisibility(View.VISIBLE);
+                                    editText.setOnKeyListener(new OnKeyListener() {
+                                        @Override
+                                        public boolean onKey(View v, int keyCode, KeyEvent event) {
+                                            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                                                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                                                if (!Objects.equals(editText.getText().toString(), getResources().getString(R.string.level2_answer))) {
+                                                    whatWasWrong = getResources().getString(R.string.game_over_wrong_passcode);
+                                                    editText.setVisibility(GONE);
+                                                    wrongPasscode = true;
+                                                } else {
+                                                    editText.setVisibility(GONE);
+                                                    correctPasscode = true;
+                                                }
+
+                                                return true;
                                             }
-                                            resume();
-                                            return true;
+                                            return false;
                                         }
-                                        return false;
-                                    }
-                                });
-                                editText.setOnFocusChangeListener(new OnFocusChangeListener() {
-                                    @Override
-                                    public void onFocusChange(View v, boolean hasFocus) {
-                                        if (hasFocus) {
-                                            pause();
-                                        }
-                                    }
-                                });
-                            }
-                        });
+                                    });
+                                }
+                            });
+                        }
                     }
                 }
             }
@@ -489,23 +494,35 @@ public class SMView extends SurfaceView implements Runnable {
     }
 
     public void startLevel() {
-        numClicks = -1;
-        levelManager = new LevelManager(context, levelManager.getLevel()+1, screenWidth, screenHeight);
-        miniGame = false;
-        toxicNum = 1;
-        passedTest = false;
-        showedRules = false;
-        if(bitmaps != null) {
-            for(int i=0; i< bitmaps.length; i++) {
-                if(bitmaps[i] != null) {
-                    bitmaps[i].recycle();
-                    bitmaps[i] = null;
+        if(levelManager.getLevel() == 1) {
+            numClicks = -1;
+            levelManager = new LevelManager(context, levelManager.getLevel() + 1, screenWidth, screenHeight);
+            miniGame = false;
+            toxicNum = 1;
+            passedTest = false;
+            showedRules = false;
+            if (bitmaps != null) {
+                for (int i = 0; i < bitmaps.length; i++) {
+                    if (bitmaps[i] != null) {
+                        bitmaps[i].recycle();
+                        bitmaps[i] = null;
+                    }
                 }
+                bitmaps = null;
             }
-            bitmaps = null;
+            this.gameObjects = levelManager.getGameObjects();
+            this.bitmaps = levelManager.getBitmaps();
+
+            int i = 0;
+            for(Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
+                if(Objects.equals(go.getKey(), TOXIC_KEY)) {
+                    toxicBitmapIndex = i;
+                } else if(Objects.equals(go.getKey(), DOOR_KEY)) {
+                    doorBitmapIndex = i;
+                }
+                i++;
+            }
         }
-        this.gameObjects = levelManager.getGameObjects();
-        this.bitmaps = levelManager.getBitmaps();
     }
     private void gameOver() {
         miniGame = false;
