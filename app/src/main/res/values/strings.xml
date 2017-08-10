@@ -25,6 +25,13 @@
     <string name="level2_answer">229</string>
     <string name="game_over_wrong_passcode">Sphiggo: The passcode is incorrect!</string>
 
+    <!-- LEVEL THREE -->
+    <string name="level3_hint">Enter the answer with spaces between words</string>
+    <string name="chris_one_rule_1">Chris: Hello, I will give you messages that need to be deciphered!</string>
+    <string name="chris_one_rule_2">Do not ask me anything! I am not so kind to give hints like the rest of them!</string>
+    <string name="level3_answer">red green blue</string>
+    <string name="game_over_wrong_answer">Sphiggo:</string>
+
     <string name="game_over_text">Your answer is wrong! Now you will suffer!</string>
     <string name="win_text">Sphiggo: Your answer is correct. Go trough that open door to get to the next level!</string>
     <string name="intro">
