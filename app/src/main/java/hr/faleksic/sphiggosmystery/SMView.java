@@ -225,7 +225,7 @@ public class SMView extends SurfaceView implements Runnable {
                                     editText.setVisibility(View.VISIBLE);
                                     if(levelManager.getLevel() == 3) {
                                         editText.setText("");
-                                        editText.setRawInputType(InputType.TYPE_CLASS_TEXT);
+                                        editText.setInputType(InputType.TYPE_CLASS_TEXT);
                                         editText.setFilters(new InputFilter[] {});
                                     }
                                     editText.setOnKeyListener(new OnKeyListener() {
