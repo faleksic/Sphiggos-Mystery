@@ -32,6 +32,13 @@
     <string name="level3_answer">red green blue</string>
     <string name="game_over_wrong_answer">Sphiggo:</string>
 
+    <!-- LEVEL FIVE -->
+    <string name="level5_hint">Enter numbers with commas in between</string>
+    <string name="matt_two_rule_1">Matt: Hmm, I guess you are smarter than you look like!</string>
+    <string name="matt_two_rule_2">Anyway, like before the riddle is written on paper in front of you.</string>
+    <string name="matt_two_rule_3">When you think you know the answer write it down and you will die because no one have ever solved this one!</string>
+    <string name="level4_answer">1,4,9,16,25,36,49,64,81,100</string>
+
     <string name="game_over_text">Your answer is wrong! Now you will suffer!</string>
     <string name="win_text">Sphiggo: Your answer is correct. Go trough that open door to get to the next level!</string>
     <string name="intro">

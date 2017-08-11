@@ -30,7 +30,7 @@ import java.util.Objects;
 public class SMView extends SurfaceView implements Runnable {
 
     private volatile boolean running;
-    private boolean debugging = false;
+    private boolean debugging = true;
     Thread gameThread = null;
     private Paint paint;
     private Canvas canvas;
@@ -170,7 +170,8 @@ public class SMView extends SurfaceView implements Runnable {
                 }
                 break;
             } case 2:
-              case 3:{
+              case 3:
+            case 4:{
 
                 if (kill) {
                     toxicAnimation();
@@ -223,7 +224,7 @@ public class SMView extends SurfaceView implements Runnable {
                                 @Override
                                 public void run() {
                                     editText.setVisibility(View.VISIBLE);
-                                    if(levelManager.getLevel() == 3) {
+                                    if(levelManager.getLevel() > 2) {
                                         editText.setText("");
                                         editText.setInputType(InputType.TYPE_CLASS_TEXT);
                                         editText.setFilters(new InputFilter[] {});
@@ -242,6 +243,10 @@ public class SMView extends SurfaceView implements Runnable {
                                                         break;
                                                     case 3:
                                                         correctAnswer = getResources().getString(R.string.level3_answer);
+                                                        whatWasWrong = getResources().getString(R.string.game_over_wrong_answer );
+                                                        break;
+                                                    case 4:
+                                                        correctAnswer = getResources().getString(R.string.level4_answer);
                                                         whatWasWrong = getResources().getString(R.string.game_over_wrong_answer );
                                                         break;
                                                 }
@@ -381,7 +386,8 @@ public class SMView extends SurfaceView implements Runnable {
                 }
                 break;
             } case 2:
-            case 3:{
+            case 3:
+            case 4:{
                 int i = 0;
                 for (Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
                     if (Objects.equals(go.getKey(), BACKGROUND_KEY)) {
@@ -396,11 +402,17 @@ public class SMView extends SurfaceView implements Runnable {
                                 background1 = "game_background3";
                                 background2 = "game3_background";
                                 break;
+                            }case 4: {
+                                background1 = "game_background5";
+                                background2 = "game5_background";
+                                break;
                             }
                         }
-                        String background = background1;
+                        String background;
                         if (show) {
                             background = background2;
+                        } else {
+                            background = background1;
                         }
                         go.getValue().setBitmapName(background);
                         bitmaps[i] = go.getValue().prepareBitmap(context, go.getValue().getBitmapName());
@@ -525,7 +537,7 @@ public class SMView extends SurfaceView implements Runnable {
     }
 
     public void startLevel() {
-        if(levelManager.getLevel() != 3) {
+        if(levelManager.getLevel() != 4) {
             numClicks = -1;
             levelManager = new LevelManager(context, levelManager.getLevel() + 1, screenWidth, screenHeight);
             miniGame = false;
@@ -604,7 +616,8 @@ public class SMView extends SurfaceView implements Runnable {
                 gameObjects.put(CABBAGE_KEY, new Cabbage((int)(screenWidth*0.1), (int)(screenHeight*0.1), (int)(screenWidth/1.2), (int)(screenHeight*0.5), screenWidth, screenHeight));
             }
             case 2:
-            case 3: {
+            case 3:
+            case 4:{
                 final EditText editText = (EditText)((Activity)context).findViewById(R.id.level2_edit_text);
                 ((Activity)context).runOnUiThread(new Runnable() {
                     @Override

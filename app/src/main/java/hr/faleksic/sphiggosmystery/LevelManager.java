@@ -50,6 +50,14 @@ public class LevelManager {
                 gameObjects = levelData.data;
                 bitmaps = new Bitmap[gameObjects.size()];
                 break;
+            } case 4: {
+                levelData = new LevelFive(context, screenWidth, screenHeight);
+                for (int i = 1; i < 4; i++) {
+                    rulesText.add(getStringResourceByName("matt_two_rule_" + String.valueOf(i)));
+                }
+                gameObjects = levelData.data;
+                bitmaps = new Bitmap[gameObjects.size()];
+                break;
             }
 
         }
