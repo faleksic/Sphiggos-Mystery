@@ -37,7 +37,12 @@
     <string name="matt_two_rule_1">Matt: Hmm, I guess you are smarter than you look like!</string>
     <string name="matt_two_rule_2">Anyway, like before the riddle is written on paper in front of you.</string>
     <string name="matt_two_rule_3">When you think you know the answer write it down and you will die because no one have ever solved this one!</string>
-    <string name="level4_answer">1,4,9,16,25,36,49,64,81,100</string>
+    <string name="level5_answer">1,4,9,16,25,36,49,64,81,100</string>
+
+    <!-- LEVEL SIX -->
+    <string name="level6_hint">Answer</string>
+    <string name="chris_two_rule">Chris: ...</string>
+    <string name="level6_answer">SECRET KEY</string>
 
     <string name="game_over_text">Your answer is wrong! Now you will suffer!</string>
     <string name="win_text">Sphiggo: Your answer is correct. Go trough that open door to get to the next level!</string>

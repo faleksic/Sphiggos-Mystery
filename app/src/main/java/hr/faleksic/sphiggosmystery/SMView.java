@@ -171,7 +171,8 @@ public class SMView extends SurfaceView implements Runnable {
                 break;
             } case 2:
               case 3:
-            case 4:{
+            case 4:
+            case 5:{
 
                 if (kill) {
                     toxicAnimation();
@@ -243,11 +244,15 @@ public class SMView extends SurfaceView implements Runnable {
                                                         break;
                                                     case 3:
                                                         correctAnswer = getResources().getString(R.string.level3_answer);
-                                                        whatWasWrong = getResources().getString(R.string.game_over_wrong_answer );
+                                                        whatWasWrong = getResources().getString(R.string.game_over_wrong_answer);
                                                         break;
                                                     case 4:
-                                                        correctAnswer = getResources().getString(R.string.level4_answer);
-                                                        whatWasWrong = getResources().getString(R.string.game_over_wrong_answer );
+                                                        correctAnswer = getResources().getString(R.string.level5_answer);
+                                                        whatWasWrong = getResources().getString(R.string.game_over_wrong_answer);
+                                                        break;
+                                                    case 5:
+                                                        correctAnswer = getResources().getString(R.string.level6_answer);
+                                                        whatWasWrong = getResources().getString(R.string.game_over_wrong_answer);
                                                         break;
                                                 }
                                                 if (!Objects.equals(editText.getText().toString(), correctAnswer)) {
@@ -387,7 +392,8 @@ public class SMView extends SurfaceView implements Runnable {
                 break;
             } case 2:
             case 3:
-            case 4:{
+            case 4:
+            case 5:{
                 int i = 0;
                 for (Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
                     if (Objects.equals(go.getKey(), BACKGROUND_KEY)) {
@@ -398,13 +404,17 @@ public class SMView extends SurfaceView implements Runnable {
                                 background1 = "game_background2";
                                 background2 = "game2_background";
                                 break;
-                            }case 3: {
+                            } case 3: {
                                 background1 = "game_background3";
                                 background2 = "game3_background";
                                 break;
-                            }case 4: {
+                            } case 4: {
                                 background1 = "game_background5";
                                 background2 = "game5_background";
+                                break;
+                            } case 5: {
+                                background1 = "game_background6";
+                                background2 = "game6_background";
                                 break;
                             }
                         }
@@ -537,7 +547,7 @@ public class SMView extends SurfaceView implements Runnable {
     }
 
     public void startLevel() {
-        if(levelManager.getLevel() != 4) {
+        if(levelManager.getLevel() != 5) {
             numClicks = -1;
             levelManager = new LevelManager(context, levelManager.getLevel() + 1, screenWidth, screenHeight);
             miniGame = false;
@@ -617,7 +627,8 @@ public class SMView extends SurfaceView implements Runnable {
             }
             case 2:
             case 3:
-            case 4:{
+            case 4:
+            case 5:{
                 final EditText editText = (EditText)((Activity)context).findViewById(R.id.level2_edit_text);
                 ((Activity)context).runOnUiThread(new Runnable() {
                     @Override

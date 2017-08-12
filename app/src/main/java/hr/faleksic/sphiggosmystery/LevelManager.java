@@ -58,6 +58,12 @@ public class LevelManager {
                 gameObjects = levelData.data;
                 bitmaps = new Bitmap[gameObjects.size()];
                 break;
+            } case 5: {
+                levelData = new LevelSix(context, screenWidth, screenHeight);
+                rulesText.add(getStringResourceByName("chris_two_rule"));
+                gameObjects = levelData.data;
+                bitmaps = new Bitmap[gameObjects.size()];
+                break;
             }
 
         }
