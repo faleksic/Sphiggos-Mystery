@@ -44,6 +44,16 @@
     <string name="chris_two_rule">Chris: ...</string>
     <string name="level6_answer">SECRET KEY</string>
 
+    <!-- LEVEL EIGHT -->
+    <string name="level8_hint">Enter floor</string>
+    <string name="matt_three_rule_1">Matt: HOW ARE YOU STILL ALIVE!</string>
+    <string name="matt_three_rule_2">You know how they say, if you want something done you have to do it yourself!</string>
+    <string name="matt_three_rule_3">This is my hardest riddle, THIS IS HOW YOU DIE!</string>
+    <string name="level8_answer">6</string>
+
+    <!-- LEVEL NINE -->
+    <string name="level9_answer">VENI VIDI VICI</string>
+
     <string name="game_over_text">Your answer is wrong! Now you will suffer!</string>
     <string name="win_text">Sphiggo: Your answer is correct. Go trough that open door to get to the next level!</string>
     <string name="intro">

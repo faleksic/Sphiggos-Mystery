@@ -170,9 +170,11 @@ public class SMView extends SurfaceView implements Runnable {
                 }
                 break;
             } case 2:
-              case 3:
+            case 3:
             case 4:
-            case 5:{
+            case 5:
+            case 6:
+            case 7:{
 
                 if (kill) {
                     toxicAnimation();
@@ -203,7 +205,9 @@ public class SMView extends SurfaceView implements Runnable {
                     if(!Objects.equals(go.getKey(), PLAYER_KEY)) {
                         canvas.drawBitmap(bitmaps[i], go.getValue().getPositionX(), go.getValue().getPositionY(), null);
                     } else {
-                        canvas.drawBitmap(bitmaps[i], frameToDraw, whereToDraw, null);
+                        if(bitmaps[i] != null) {
+                            canvas.drawBitmap(bitmaps[i], frameToDraw, whereToDraw, null);
+                        }
                     }
                 }
                 i++;
@@ -219,17 +223,25 @@ public class SMView extends SurfaceView implements Runnable {
                         miniGame = true;
                         gameObjects.get(RULESBOX_KEY).setVisible(false);
                         showMiniGame(true);
+
                         if(levelManager.getLevel() != 1) {
                             final EditText editText = (EditText) ((Activity) context).findViewById(R.id.level2_edit_text);
+                            if(levelManager.getLevel() > 2 && levelManager.getLevel() != 6) {
+                                editText.setText("");
+                                editText.setInputType(InputType.TYPE_CLASS_TEXT);
+                                editText.setFilters(new InputFilter[] {});
+                            } else if(levelManager.getLevel() == 6) {
+                                editText.setText("");
+                                InputFilter[] FilterArray = new InputFilter[1];
+                                FilterArray[0] = new InputFilter.LengthFilter(1);
+                                editText.setFilters(FilterArray);
+                                editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                            }
                             ((Activity) context).runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     editText.setVisibility(View.VISIBLE);
-                                    if(levelManager.getLevel() > 2) {
-                                        editText.setText("");
-                                        editText.setInputType(InputType.TYPE_CLASS_TEXT);
-                                        editText.setFilters(new InputFilter[] {});
-                                    }
+
                                     editText.setOnKeyListener(new OnKeyListener() {
                                         @Override
                                         public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -252,6 +264,14 @@ public class SMView extends SurfaceView implements Runnable {
                                                         break;
                                                     case 5:
                                                         correctAnswer = getResources().getString(R.string.level6_answer);
+                                                        whatWasWrong = getResources().getString(R.string.game_over_wrong_answer);
+                                                        break;
+                                                    case 6:
+                                                        correctAnswer = getResources().getString(R.string.level8_answer);
+                                                        whatWasWrong = getResources().getString(R.string.game_over_wrong_answer);
+                                                        break;
+                                                    case 7:
+                                                        correctAnswer = getResources().getString(R.string.level9_answer);
                                                         whatWasWrong = getResources().getString(R.string.game_over_wrong_answer);
                                                         break;
                                                 }
@@ -393,7 +413,9 @@ public class SMView extends SurfaceView implements Runnable {
             } case 2:
             case 3:
             case 4:
-            case 5:{
+            case 5:
+            case 6:
+            case 7:{
                 int i = 0;
                 for (Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
                     if (Objects.equals(go.getKey(), BACKGROUND_KEY)) {
@@ -415,6 +437,14 @@ public class SMView extends SurfaceView implements Runnable {
                             } case 5: {
                                 background1 = "game_background6";
                                 background2 = "game6_background";
+                                break;
+                            } case 6: {
+                                background1 = "game_background8";
+                                background2 = "game8_background";
+                                break;
+                            } case 7: {
+                                background1 = "game_background9";
+                                background2 = "game9_background";
                                 break;
                             }
                         }
@@ -440,10 +470,11 @@ public class SMView extends SurfaceView implements Runnable {
                 }
 
                 if(show) {
-                    ((Activity)context).runOnUiThread(new Runnable() {
+                    ((Activity) context).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            ((Activity)context).findViewById(R.id.level2_edit_text).setVisibility(View.VISIBLE);
+                            EditText editText = (EditText)((Activity)context).findViewById(R.id.level2_edit_text);
+                            editText.setVisibility(View.VISIBLE);
                         }
                     });
                 }
@@ -547,7 +578,7 @@ public class SMView extends SurfaceView implements Runnable {
     }
 
     public void startLevel() {
-        if(levelManager.getLevel() != 5) {
+        if(levelManager.getLevel() != 7) {
             numClicks = -1;
             levelManager = new LevelManager(context, levelManager.getLevel() + 1, screenWidth, screenHeight);
             miniGame = false;
@@ -575,6 +606,28 @@ public class SMView extends SurfaceView implements Runnable {
                 }
                 i++;
             }
+            ((Activity) context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    EditText editText = (EditText) ((Activity) context).findViewById(R.id.level2_edit_text);
+                    if (editText != null) {
+                        switch (levelManager.getLevel()) {
+                            case 2:
+                                editText.setHint(getResources().getString(R.string.level2_hint));
+                                break;
+                            case 3:
+                                editText.setHint(getResources().getString(R.string.level3_hint));
+                                break;
+                            case 4:
+                                editText.setHint(getResources().getString(R.string.level5_hint));
+                                break;
+                            case 5:
+                                editText.setHint(getResources().getString(R.string.level6_hint));
+                                break;
+                        }
+                    }
+                }
+            });
         }
     }
     private void gameOver() {
@@ -624,11 +677,14 @@ public class SMView extends SurfaceView implements Runnable {
                 gameObjects.put(WOLF_KEY, new Wolf((int)(screenWidth*0.15), (int)(screenHeight*0.1), (int)(screenWidth/1.25), (int)(screenHeight*0.3), screenWidth, screenHeight));
                 gameObjects.put(SHEEP_KEY, new Sheep((int)(screenWidth*0.15), (int)(screenHeight*0.1), (int)(screenWidth/1.3), (int)(screenHeight*0.1), screenWidth, screenHeight));
                 gameObjects.put(CABBAGE_KEY, new Cabbage((int)(screenWidth*0.1), (int)(screenHeight*0.1), (int)(screenWidth/1.2), (int)(screenHeight*0.5), screenWidth, screenHeight));
+                break;
             }
             case 2:
             case 3:
             case 4:
-            case 5:{
+            case 5:
+            case 6:
+            case 7:{
                 final EditText editText = (EditText)((Activity)context).findViewById(R.id.level2_edit_text);
                 ((Activity)context).runOnUiThread(new Runnable() {
                     @Override
@@ -639,6 +695,7 @@ public class SMView extends SurfaceView implements Runnable {
                 });
             }
         }
+
         showMiniGame(true);
         miniGame = true;
         toxicNum = 1;
