@@ -3,6 +3,7 @@ package hr.faleksic.sphiggosmystery;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -58,8 +59,8 @@ public class SMView extends SurfaceView implements Runnable {
     private boolean gameOverText = false;
     private boolean passedTest = false;
     private String whatWasWrong;
-    private boolean wrongPasscode = false;
-    private boolean correctPasscode = false;
+    private volatile boolean wrongPasscode = false;
+    private volatile boolean correctPasscode = false;
 
 
     private static final String PLAYER_KEY = "player";
@@ -80,7 +81,7 @@ public class SMView extends SurfaceView implements Runnable {
     private static final String QUITCLICK_KEY = "quitClick";
 
 
-    public SMView(Context context, int screenWidth, int screenHeight) {
+    public SMView(Context context, int screenWidth, int screenHeight, int levelToStart) {
         super(context);
 
         this.context = context;
@@ -88,7 +89,7 @@ public class SMView extends SurfaceView implements Runnable {
         this.screenHeight = screenHeight;
         ourHolder = getHolder();
         paint = new Paint();
-        levelManager = new LevelManager(context, 1, screenWidth, screenHeight);
+        levelManager = new LevelManager(context, levelToStart, screenWidth, screenHeight);
         this.gameObjects = levelManager.getGameObjects();
         this.bitmaps = levelManager.getBitmaps();
         inputController = new InputController(screenWidth, screenHeight);
@@ -102,11 +103,6 @@ public class SMView extends SurfaceView implements Runnable {
 
 
         time = System.currentTimeMillis();
-
-        //TODO REMOVE THIS FOR PRODUCTION
-        if(debugging) {
-            startLevel();
-        }
 
         int i = 0;
         for(Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
@@ -226,21 +222,22 @@ public class SMView extends SurfaceView implements Runnable {
 
                         if(levelManager.getLevel() != 1) {
                             final EditText editText = (EditText) ((Activity) context).findViewById(R.id.level2_edit_text);
-                            if(levelManager.getLevel() > 2 && levelManager.getLevel() != 6) {
-                                editText.setText("");
-                                editText.setInputType(InputType.TYPE_CLASS_TEXT);
-                                editText.setFilters(new InputFilter[] {});
-                            } else if(levelManager.getLevel() == 6) {
-                                editText.setText("");
-                                InputFilter[] FilterArray = new InputFilter[1];
-                                FilterArray[0] = new InputFilter.LengthFilter(1);
-                                editText.setFilters(FilterArray);
-                                editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                            }
                             ((Activity) context).runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     editText.setVisibility(View.VISIBLE);
+
+                                    if(levelManager.getLevel() > 2 && levelManager.getLevel() != 6) {
+                                        editText.setText("");
+                                        editText.setInputType(InputType.TYPE_CLASS_TEXT);
+                                        editText.setFilters(new InputFilter[] {});
+                                    } else if(levelManager.getLevel() == 6) {
+                                        editText.setText("");
+                                        InputFilter[] FilterArray = new InputFilter[1];
+                                        FilterArray[0] = new InputFilter.LengthFilter(1);
+                                        editText.setFilters(FilterArray);
+                                        editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                                    }
 
                                     editText.setOnKeyListener(new OnKeyListener() {
                                         @Override
@@ -580,6 +577,8 @@ public class SMView extends SurfaceView implements Runnable {
     public void startLevel() {
         if(levelManager.getLevel() != 7) {
             numClicks = -1;
+            SharedPreferences.Editor editor = context.getSharedPreferences(getResources().getString(R.string.preference_file_key), Activity.MODE_PRIVATE).edit();
+            editor.putInt(getResources().getString(R.string.level), levelManager.getLevel() + 1).apply();
             levelManager = new LevelManager(context, levelManager.getLevel() + 1, screenWidth, screenHeight);
             miniGame = false;
             toxicNum = 1;

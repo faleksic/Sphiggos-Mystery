@@ -28,7 +28,10 @@
         <activity
             android:name=".GameActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".IntroActivity"
+        <activity
+            android:name=".IntroActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name=".LevelsActivity"
             android:screenOrientation="landscape"/>
     </application>
 

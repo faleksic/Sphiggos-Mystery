@@ -56,8 +56,18 @@ public class GameActivity extends AppCompatActivity {
         //placeholder
         editText.setHint(getResources().getString(R.string.level2_hint));
 
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                gameView = new SMView(this, resolution.x, resolution.y, 1);
+            } else {
+                gameView = new SMView(this, resolution.x, resolution.y, extras.getInt("LEVEL"));
+            }
+        } else {
+            gameView = new SMView(this, resolution.x, resolution.y, (int) savedInstanceState.getSerializable("LEVEL"));
+        }
 
-        gameView = new SMView(this, resolution.x, resolution.y);
+
         layout.addView(gameView);
         layout.addView(editText);
 
