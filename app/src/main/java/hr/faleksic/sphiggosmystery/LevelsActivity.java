@@ -1,5 +1,6 @@
 package hr.faleksic.sphiggosmystery;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.content.ContextCompat;
@@ -10,10 +11,17 @@ import android.widget.ImageButton;
 
 public class LevelsActivity extends AppCompatActivity {
 
+    ProgressDialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_levels);
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("Loading...");
+        dialog.setCancelable(false);
+        dialog.setInverseBackgroundForced(false);
+
 
         SharedPreferences prefs = getSharedPreferences(getResources().getString(R.string.preference_file_key), MODE_PRIVATE);
         int level = prefs.getInt(getResources().getString(R.string.level), 0);
@@ -31,6 +39,7 @@ public class LevelsActivity extends AppCompatActivity {
             imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    dialog.show();
                     click(2);
                     imageButton.setClickable(false);
                     imageButton.setEnabled(false);
@@ -44,6 +53,7 @@ public class LevelsActivity extends AppCompatActivity {
             imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    dialog.show();
                     click(3);
                     imageButton.setClickable(false);
                     imageButton.setEnabled(false);
@@ -57,6 +67,7 @@ public class LevelsActivity extends AppCompatActivity {
             imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    dialog.show();
                     click(4);
                     imageButton.setClickable(false);
                     imageButton.setEnabled(false);
@@ -70,6 +81,7 @@ public class LevelsActivity extends AppCompatActivity {
             imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    dialog.show();
                     click(5);
                     imageButton.setClickable(false);
                     imageButton.setEnabled(false);
@@ -83,6 +95,7 @@ public class LevelsActivity extends AppCompatActivity {
             imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    dialog.show();
                     click(6);
                     imageButton.setClickable(false);
                     imageButton.setEnabled(false);
@@ -96,6 +109,7 @@ public class LevelsActivity extends AppCompatActivity {
             imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    dialog.show();
                     click(7);
                     imageButton.setClickable(false);
                     imageButton.setEnabled(false);

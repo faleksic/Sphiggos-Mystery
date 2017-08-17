@@ -1,5 +1,6 @@
 package hr.faleksic.sphiggosmystery;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.support.annotation.IdRes;

@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.preference.PreferenceManager;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Layout;
@@ -199,7 +200,9 @@ public class SMView extends SurfaceView implements Runnable {
             for(Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
                 if(go.getValue().isVisiable() && bitmaps[i] != null) {
                     if(!Objects.equals(go.getKey(), PLAYER_KEY)) {
-                        canvas.drawBitmap(bitmaps[i], go.getValue().getPositionX(), go.getValue().getPositionY(), null);
+                        if(bitmaps[i] != null) {
+                            canvas.drawBitmap(bitmaps[i], go.getValue().getPositionX(), go.getValue().getPositionY(), null);
+                        }
                     } else {
                         if(bitmaps[i] != null) {
                             canvas.drawBitmap(bitmaps[i], frameToDraw, whereToDraw, null);
@@ -574,11 +577,50 @@ public class SMView extends SurfaceView implements Runnable {
         }
     }
 
+    public void startLevel(boolean start) {
+        if(start) {
+            SharedPreferences.Editor editor = context.getSharedPreferences(getResources().getString(R.string.preference_file_key), Activity.MODE_PRIVATE).edit();
+            editor.putInt(getResources().getString(R.string.level), 1).apply();
+            numClicks = -1;
+            levelManager = new LevelManager(context, 1, screenWidth, screenHeight);
+            miniGame = false;
+            toxicNum = 1;
+            passedTest = false;
+            showedRules = false;
+            if (bitmaps != null) {
+                for (int i = 0; i < bitmaps.length; i++) {
+                    if (bitmaps[i] != null) {
+                        bitmaps[i].recycle();
+                        bitmaps[i] = null;
+                    }
+                }
+                bitmaps = null;
+            }
+            this.gameObjects = levelManager.getGameObjects();
+            this.bitmaps = levelManager.getBitmaps();
+
+            int i = 0;
+            for(Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
+                if(Objects.equals(go.getKey(), TOXIC_KEY)) {
+                    toxicBitmapIndex = i;
+                } else if(Objects.equals(go.getKey(), DOOR_KEY)) {
+                    doorBitmapIndex = i;
+                }
+                i++;
+            }
+        }
+
+    }
+
     public void startLevel() {
         if(levelManager.getLevel() != 7) {
             numClicks = -1;
-            SharedPreferences.Editor editor = context.getSharedPreferences(getResources().getString(R.string.preference_file_key), Activity.MODE_PRIVATE).edit();
-            editor.putInt(getResources().getString(R.string.level), levelManager.getLevel() + 1).apply();
+            SharedPreferences preferences = context.getSharedPreferences(getResources().getString(R.string.preference_file_key), Activity.MODE_PRIVATE);
+            if(preferences.getInt(getResources().getString(R.string.level), 0) < levelManager.getLevel() + 1) {
+                SharedPreferences.Editor editor = context.getSharedPreferences(getResources().getString(R.string.preference_file_key), Activity.MODE_PRIVATE).edit();
+                editor.putInt(getResources().getString(R.string.level), levelManager.getLevel() + 1).apply();
+            }
+
             levelManager = new LevelManager(context, levelManager.getLevel() + 1, screenWidth, screenHeight);
             miniGame = false;
             toxicNum = 1;
@@ -670,35 +712,43 @@ public class SMView extends SurfaceView implements Runnable {
     }
 
     public void retry() {
-        switch (levelManager.getLevel()) {
-            case 1: {
-                gameObjects.put(BOAT_KEY, new Boat((int)(screenWidth*0.3), (int)(screenHeight*0.2), screenWidth/2, (int)(screenHeight*0.2), screenWidth));
-                gameObjects.put(WOLF_KEY, new Wolf((int)(screenWidth*0.15), (int)(screenHeight*0.1), (int)(screenWidth/1.25), (int)(screenHeight*0.3), screenWidth, screenHeight));
-                gameObjects.put(SHEEP_KEY, new Sheep((int)(screenWidth*0.15), (int)(screenHeight*0.1), (int)(screenWidth/1.3), (int)(screenHeight*0.1), screenWidth, screenHeight));
-                gameObjects.put(CABBAGE_KEY, new Cabbage((int)(screenWidth*0.1), (int)(screenHeight*0.1), (int)(screenWidth/1.2), (int)(screenHeight*0.5), screenWidth, screenHeight));
-                break;
-            }
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 7:{
-                final EditText editText = (EditText)((Activity)context).findViewById(R.id.level2_edit_text);
-                ((Activity)context).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        editText.setText("");
-                    }
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        String syncConnPref = sharedPref.getString("pref_difficulty", "");
 
-                });
+        if(Objects.equals(syncConnPref, "hard")) {
+            startLevel(true);
+        } else {
+
+            switch (levelManager.getLevel()) {
+                case 1: {
+                    gameObjects.put(BOAT_KEY, new Boat((int) (screenWidth * 0.3), (int) (screenHeight * 0.2), screenWidth / 2, (int) (screenHeight * 0.2), screenWidth));
+                    gameObjects.put(WOLF_KEY, new Wolf((int) (screenWidth * 0.15), (int) (screenHeight * 0.1), (int) (screenWidth / 1.25), (int) (screenHeight * 0.3), screenWidth, screenHeight));
+                    gameObjects.put(SHEEP_KEY, new Sheep((int) (screenWidth * 0.15), (int) (screenHeight * 0.1), (int) (screenWidth / 1.3), (int) (screenHeight * 0.1), screenWidth, screenHeight));
+                    gameObjects.put(CABBAGE_KEY, new Cabbage((int) (screenWidth * 0.1), (int) (screenHeight * 0.1), (int) (screenWidth / 1.2), (int) (screenHeight * 0.5), screenWidth, screenHeight));
+                    break;
+                }
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7: {
+                    final EditText editText = (EditText) ((Activity) context).findViewById(R.id.level2_edit_text);
+                    ((Activity) context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            editText.setText("");
+                        }
+
+                    });
+                }
             }
+
+            showMiniGame(true);
+            miniGame = true;
+            toxicNum = 1;
+            passedTest = false;
         }
-
-        showMiniGame(true);
-        miniGame = true;
-        toxicNum = 1;
-        passedTest = false;
     }
 
     public void quit() {

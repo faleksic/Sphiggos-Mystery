@@ -1,5 +1,6 @@
 package hr.faleksic.sphiggosmystery;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -15,9 +16,16 @@ import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
 
+    ProgressDialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("Loading...");
+        dialog.setCancelable(false);
+        dialog.setInverseBackgroundForced(false);
+
         Crashlytics crashlyticsKit = new Crashlytics.Builder()
                 .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
                 .build();
@@ -28,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dialog.show();
                 SharedPreferences prefs = getSharedPreferences(getResources().getString(R.string.preference_file_key), MODE_PRIVATE);
                 int level = prefs.getInt(getResources().getString(R.string.level), 0);
                 if(level == 0 || level == 1) {
@@ -40,9 +49,8 @@ public class MainActivity extends AppCompatActivity {
                     Intent i = new Intent(MainActivity.this, GameActivity.class);
                     i.putExtra("LEVEL", level);
                     startActivity(i);
-                    finish();
                 }
-                    finish();
+                finish();
             }
         });
 
@@ -52,6 +60,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), LevelsActivity.class));
                 finish();
+            }
+        });
+
+        ImageButton settingsButton = (ImageButton) findViewById(R.id.button_main_settings);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
             }
         });
     }

@@ -31,8 +31,13 @@
         <activity
             android:name=".IntroActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".LevelsActivity"
-            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".LevelsActivity"
+            android:screenOrientation="landscape" />
+
+        <activity android:name=".SettingsActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
     </application>
 
 </manifest>
