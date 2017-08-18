@@ -97,11 +97,12 @@ public class SMView extends SurfaceView implements Runnable {
 
         int frameWidth = 25;
         int frameHeight = 45;
-        whereToDraw = new RectF(gameObjects.get(PLAYER_KEY).getPositionX(), gameObjects.get(PLAYER_KEY).getPositionY(),
-                gameObjects.get(PLAYER_KEY).getPositionX() + screenWidth / 6,
-                gameObjects.get(PLAYER_KEY).getPositionY() + (int) (screenHeight * 0.405));
-        frameToDraw = new Rect(frameWidth*13, frameHeight*3, frameWidth*14, frameHeight*4);
-
+        if(levelManager.getLevel() != 8) {
+            whereToDraw = new RectF(gameObjects.get(PLAYER_KEY).getPositionX(), gameObjects.get(PLAYER_KEY).getPositionY(),
+                    gameObjects.get(PLAYER_KEY).getPositionX() + screenWidth / 6,
+                    gameObjects.get(PLAYER_KEY).getPositionY() + (int) (screenHeight * 0.405));
+            frameToDraw = new Rect(frameWidth * 13, frameHeight * 3, frameWidth * 14, frameHeight * 4);
+        }
 
         time = System.currentTimeMillis();
 
@@ -213,7 +214,7 @@ public class SMView extends SurfaceView implements Runnable {
             }
 
             //checking are rules showed
-            if(!showedRules) {
+            if(!showedRules && levelManager.getLevel() != 8) {
                 if(numClicks > -1) {
                     if(numClicks < levelManager.getRulesText().size()) {
                         displayRules();
@@ -613,7 +614,7 @@ public class SMView extends SurfaceView implements Runnable {
     }
 
     public void startLevel() {
-        if(levelManager.getLevel() != 7) {
+        if(levelManager.getLevel() < 8) {
             numClicks = -1;
             SharedPreferences preferences = context.getSharedPreferences(getResources().getString(R.string.preference_file_key), Activity.MODE_PRIVATE);
             if(preferences.getInt(getResources().getString(R.string.level), 0) < levelManager.getLevel() + 1) {

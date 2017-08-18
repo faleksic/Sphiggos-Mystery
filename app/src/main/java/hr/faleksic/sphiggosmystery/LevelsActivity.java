@@ -41,8 +41,8 @@ public class LevelsActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     dialog.show();
                     click(2);
-                    imageButton.setClickable(false);
-                    imageButton.setEnabled(false);
+                    
+                    
                 }
             });
         }
@@ -55,8 +55,8 @@ public class LevelsActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     dialog.show();
                     click(3);
-                    imageButton.setClickable(false);
-                    imageButton.setEnabled(false);
+                    
+                    
                 }
             });
         }
@@ -69,8 +69,8 @@ public class LevelsActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     dialog.show();
                     click(4);
-                    imageButton.setClickable(false);
-                    imageButton.setEnabled(false);
+                    
+                    
                 }
             });
         }
@@ -83,8 +83,8 @@ public class LevelsActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     dialog.show();
                     click(5);
-                    imageButton.setClickable(false);
-                    imageButton.setEnabled(false);
+                    
+                    
                 }
             });
         }
@@ -97,8 +97,8 @@ public class LevelsActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     dialog.show();
                     click(6);
-                    imageButton.setClickable(false);
-                    imageButton.setEnabled(false);
+                    
+                    
                 }
             });
         }
@@ -111,17 +111,22 @@ public class LevelsActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     dialog.show();
                     click(7);
-                    imageButton.setClickable(false);
-                    imageButton.setEnabled(false);
+                    
+                    
                 }
             });
         }
     }
 
-    public void click(int num) {
-        Intent i = new Intent(this, GameActivity.class);
-        i.putExtra("LEVEL", num);
-        startActivity(i);
-        finish();
+    public void click(final int num) {
+        new Thread() {
+            @Override
+            public void run() {
+                Intent i = new Intent(LevelsActivity.this, GameActivity.class);
+                i.putExtra("LEVEL", num);
+                startActivity(i);
+                finish();
+            }
+        }.start();
     }
 }

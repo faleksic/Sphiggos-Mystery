@@ -78,8 +78,12 @@ public class LevelManager {
                 gameObjects = levelData.data;
                 bitmaps = new Bitmap[gameObjects.size()];
                 break;
+            } case 8: {
+                levelData = new GameFinish(context, screenWidth, screenHeight);
+                gameObjects = levelData.data;
+                bitmaps = new Bitmap[gameObjects.size()];
+                break;
             }
-
         }
 
         prepareLevel();

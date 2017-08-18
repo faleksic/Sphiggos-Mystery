@@ -37,20 +37,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.show();
-                SharedPreferences prefs = getSharedPreferences(getResources().getString(R.string.preference_file_key), MODE_PRIVATE);
-                int level = prefs.getInt(getResources().getString(R.string.level), 0);
-                if(level == 0 || level == 1) {
-                    if(level == 0) {
-                        SharedPreferences.Editor editor = getSharedPreferences(getResources().getString(R.string.preference_file_key), MODE_PRIVATE).edit();
-                        editor.putInt(getResources().getString(R.string.level), 1).apply();
+                new Thread() {
+                    @Override
+                    public void run() {
+                        SharedPreferences prefs = getSharedPreferences(getResources().getString(R.string.preference_file_key), MODE_PRIVATE);
+                        int level = prefs.getInt(getResources().getString(R.string.level), 0);
+                        if(level == 0 || level == 1 || level == 8) {
+                            if(level == 0) {
+                                SharedPreferences.Editor editor = getSharedPreferences(getResources().getString(R.string.preference_file_key), MODE_PRIVATE).edit();
+                                editor.putInt(getResources().getString(R.string.level), 1).apply();
+                            }
+                            startActivity(new Intent(getApplicationContext(), IntroActivity.class));
+                        } else {
+                            Intent i = new Intent(MainActivity.this, GameActivity.class);
+                            i.putExtra("LEVEL", level);
+                            startActivity(i);
+                        }
                     }
-                    startActivity(new Intent(getApplicationContext(), IntroActivity.class));
-                } else {
-                    Intent i = new Intent(MainActivity.this, GameActivity.class);
-                    i.putExtra("LEVEL", level);
-                    startActivity(i);
-                }
-                finish();
+                }.start();
+
             }
         });
 

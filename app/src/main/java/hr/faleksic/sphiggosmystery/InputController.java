@@ -1,5 +1,6 @@
 package hr.faleksic.sphiggosmystery;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -19,6 +20,9 @@ public class InputController {
         int y = (int)event.getY();
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN: {
+                if(lm.getLevel() == 8) {
+                    sm.quit();
+                }
                 if (!sm.isShowedRules()) {
                     sm.setNumCLicks(sm.getNumCLicks() + 1);
                 } else if (sm.isMiniGame()) {

@@ -102,39 +102,6 @@
                 android:src="@drawable/level_7_disabled"
                 app:layout_heightPercent="60%"
                 app:layout_widthPercent="20%"/>
-            <ImageButton
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:id="@+id/button_levels_level8"
-                android:layout_toEndOf="@id/button_levels_level7"
-                android:scaleType="fitCenter"
-                android:background="@null"
-                android:contentDescription="@string/level8"
-                android:src="@drawable/level_8_disabled"
-                app:layout_heightPercent="60%"
-                app:layout_widthPercent="20%"/>
-            <ImageButton
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:id="@+id/button_levels_level9"
-                android:layout_toEndOf="@id/button_levels_level8"
-                android:scaleType="fitCenter"
-                android:background="@null"
-                android:contentDescription="@string/level9"
-                android:src="@drawable/level_9_disabled"
-                app:layout_heightPercent="60%"
-                app:layout_widthPercent="20%"/>
-            <ImageButton
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:id="@+id/button_levels_level10"
-                android:layout_toEndOf="@id/button_levels_level9"
-                android:scaleType="fitCenter"
-                android:background="@null"
-                android:contentDescription="@string/level10"
-                android:src="@drawable/level_10_disabled"
-                app:layout_heightPercent="60%"
-                app:layout_widthPercent="20%"/>
         </android.support.percent.PercentRelativeLayout>
     </LinearLayout>
 
