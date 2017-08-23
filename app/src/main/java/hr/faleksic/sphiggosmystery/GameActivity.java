@@ -1,9 +1,7 @@
 package hr.faleksic.sphiggosmystery;
 
-import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -65,7 +63,11 @@ public class GameActivity extends AppCompatActivity {
                 gameView = new SMView(this, resolution.x, resolution.y, extras.getInt("LEVEL"));
             }
         } else {
-            gameView = new SMView(this, resolution.x, resolution.y, (int) savedInstanceState.getSerializable("LEVEL"));
+            if(savedInstanceState.getSerializable("LEVEL") != null) {
+                gameView = new SMView(this, resolution.x, resolution.y, (int) savedInstanceState.getSerializable("LEVEL"));
+            } else {
+                gameView = new SMView(this, resolution.x, resolution.y, 1);
+            }
         }
 
 

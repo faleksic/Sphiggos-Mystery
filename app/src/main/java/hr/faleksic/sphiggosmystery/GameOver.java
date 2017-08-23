@@ -1,6 +1,6 @@
 package hr.faleksic.sphiggosmystery;
 
-public class GameOver extends GameObject {
+class GameOver extends GameObject {
     GameOver(int width, int height, int positionX, int positionY) {
         setBitmapName("game_over");
         setPositionX(positionX);

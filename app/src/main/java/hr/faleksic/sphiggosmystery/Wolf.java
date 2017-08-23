@@ -1,6 +1,6 @@
 package hr.faleksic.sphiggosmystery;
 
-public class Wolf extends GameObject {
+class Wolf extends GameObject {
 
     private boolean inBoat = false;
     private boolean moving = false;
@@ -42,31 +42,31 @@ public class Wolf extends GameObject {
 
     }
 
-    public boolean isInBoat() {
+    boolean isInBoat() {
         return inBoat;
     }
 
-    public void setInBoat(boolean inBoat) {
+    private void setInBoat(boolean inBoat) {
         this.inBoat = inBoat;
     }
 
-    public boolean isMoving() {
+    boolean isMoving() {
         return moving;
     }
 
-    public void setMoving(boolean moving) {
+    void setMoving(boolean moving) {
         this.moving = moving;
     }
 
-    public void setBoatOnStartSide(boolean boatOnStartSide) {
+    void setBoatOnStartSide(boolean boatOnStartSide) {
         this.boatOnStartSide = boatOnStartSide;
     }
 
-    public boolean isOtherSide() {
+    boolean isOtherSide() {
         return otherSide;
     }
 
-    public boolean isStartSide() {
+    boolean isStartSide() {
         return startSide;
     }
 

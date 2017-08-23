@@ -4,9 +4,9 @@ import android.content.Context;
 
 import java.util.LinkedHashMap;
 
-public class LevelOne extends LevelData {
+class LevelOne extends LevelData {
 
-    public LevelOne(Context context, int screenWidth, int screenHeight){
+    LevelOne(Context context, int screenWidth, int screenHeight){
         data = new LinkedHashMap<>();
         //puting background
         data.put("background", new Background("game_background", screenWidth, screenHeight, 0, 0));
@@ -21,7 +21,7 @@ public class LevelOne extends LevelData {
         //puting boat
         data.put("boat", new Boat((int)(screenWidth*0.3), (int)(screenHeight*0.2), screenWidth/2, (int)(screenHeight*0.2), screenWidth));
         //puting player
-        data.put("player", new Player(context, screenWidth/5, (int)(screenHeight/2.5)));
+        data.put("player", new Player(screenWidth/5, (int)(screenHeight/2.5)));
         //puting doors
         data.put("door", new Door((int)(screenWidth*0.2), (int)(screenHeight*0.405), screenWidth / 2 - (int)(screenWidth*0.1), 0));
         //puting game on table

@@ -1,6 +1,6 @@
 package hr.faleksic.sphiggosmystery;
 
-public class Enemy extends GameObject {
+class Enemy extends GameObject {
 
     Enemy(String name, int width, int height, int positionX, int positionY) {
         setBitmapName(name);

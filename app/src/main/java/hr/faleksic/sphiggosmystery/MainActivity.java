@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -55,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }.start();
-
             }
         });
 
@@ -64,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), LevelsActivity.class));
-                finish();
             }
         });
 
@@ -77,5 +74,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(dialog != null) {
+            dialog.dismiss();
+        }
+    }
 }

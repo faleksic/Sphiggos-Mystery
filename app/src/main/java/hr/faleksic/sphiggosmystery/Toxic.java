@@ -1,6 +1,6 @@
 package hr.faleksic.sphiggosmystery;
 
-public class Toxic extends GameObject {
+class Toxic extends GameObject {
 
     Toxic(int width, int height, int positionX, int positionY) {
         setBitmapName("toxic1");

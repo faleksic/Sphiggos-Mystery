@@ -1,12 +1,8 @@
 package hr.faleksic.sphiggosmystery;
 
-import android.content.Context;
-import android.graphics.Bitmap;
+class Player extends  GameObject {
 
-public class Player extends  GameObject {
-    private Bitmap bitmap;
-
-    Player(Context context,int positionX, int positionY) {
+    Player(int positionX, int positionY) {
         setBitmapName("player");
         setHeight(180);
         setWidth(350);

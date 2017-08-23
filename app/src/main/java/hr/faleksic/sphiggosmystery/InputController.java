@@ -1,21 +1,19 @@
 package hr.faleksic.sphiggosmystery;
 
-import android.content.Intent;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.MotionEvent;
 
-public class InputController {
+class InputController {
 
     private int screenWidth;
     private int screenHeight;
 
-    public InputController(int screenWidth, int screenHeigth) {
+    InputController(int screenWidth, int screenHeigth) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeigth;
     }
 
-    public void handleInput(MotionEvent event, SMView sm, LevelManager lm) {
+    void handleInput(MotionEvent event, SMView sm, LevelManager lm) {
         int x = (int)event.getX();
         int y = (int)event.getY();
         switch (event.getAction() & MotionEvent.ACTION_MASK) {

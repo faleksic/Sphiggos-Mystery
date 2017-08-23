@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.preference.PreferenceManager;
@@ -32,9 +31,7 @@ import java.util.Objects;
 public class SMView extends SurfaceView implements Runnable {
 
     private volatile boolean running;
-    private boolean debugging = true;
     Thread gameThread = null;
-    private Paint paint;
     private Canvas canvas;
     private SurfaceHolder ourHolder;
     Context context;
@@ -69,11 +66,9 @@ public class SMView extends SurfaceView implements Runnable {
     private static final String WOLF_KEY = "wolf";
     private static final String CABBAGE_KEY = "cabbage";
     private static final String BACKGROUND_KEY = "background";
-    private static final String ENEMY_KEY = "enemy";
     private static final String DOOR_KEY = "door";
     private static final String RULESBOX_KEY = "rulesBox";
     private static final String BOAT_KEY = "boat";
-    private static final String GAMEONTABLE_KEY = "gameOnTable";
     private static final String TOXIC_KEY = "toxic";
     private static final String GAMEOVER_KEY = "gameOver";
     private static final String RETRY_KEY = "retry";
@@ -81,6 +76,9 @@ public class SMView extends SurfaceView implements Runnable {
     private static final String QUIT_KEY = "quit";
     private static final String QUITCLICK_KEY = "quitClick";
 
+    public SMView(Context context) {
+        super(context);
+    }
 
     public SMView(Context context, int screenWidth, int screenHeight, int levelToStart) {
         super(context);
@@ -89,7 +87,6 @@ public class SMView extends SurfaceView implements Runnable {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         ourHolder = getHolder();
-        paint = new Paint();
         levelManager = new LevelManager(context, levelToStart, screenWidth, screenHeight);
         this.gameObjects = levelManager.getGameObjects();
         this.bitmaps = levelManager.getBitmaps();
@@ -199,7 +196,7 @@ public class SMView extends SurfaceView implements Runnable {
             //drawing game objects
             int i = 0;
             for(Map.Entry<String, GameObject> go : gameObjects.entrySet()) {
-                if(go.getValue().isVisiable() && bitmaps[i] != null) {
+                if(go.getValue().isVisiable() && i < bitmaps.length && bitmaps[i] != null) {
                     if(!Objects.equals(go.getKey(), PLAYER_KEY)) {
                         if(bitmaps[i] != null) {
                             canvas.drawBitmap(bitmaps[i], go.getValue().getPositionX(), go.getValue().getPositionY(), null);
@@ -771,10 +768,6 @@ public class SMView extends SurfaceView implements Runnable {
 
     public boolean isMiniGame() {
         return miniGame;
-    }
-
-    public void setMiniGame(boolean miniGame) {
-        this.miniGame = miniGame;
     }
 
     public int getToxicNum() {

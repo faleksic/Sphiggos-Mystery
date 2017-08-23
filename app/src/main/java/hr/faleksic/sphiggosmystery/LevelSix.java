@@ -4,9 +4,9 @@ import android.content.Context;
 
 import java.util.LinkedHashMap;
 
-public class LevelSix extends LevelData {
+class LevelSix extends LevelData {
 
-    public LevelSix(Context context, int screenWidth, int screenHeight) {
+    LevelSix(Context context, int screenWidth, int screenHeight) {
         data = new LinkedHashMap<>();
 
         data.put("background", new Background("game_background6", screenWidth, screenHeight, 0, 0));
@@ -18,7 +18,7 @@ public class LevelSix extends LevelData {
         data.put("gameOnTable", new GameOnTable("game2", (int)(screenWidth*0.17), (int)(screenHeight*0.05),
                 screenWidth / 2 - (int)(screenWidth*0.1), (int) (screenHeight * 0.57)));
 
-        data.put("player", new Player(context, screenWidth/5, (int)(screenHeight/2.5)));
+        data.put("player", new Player(screenWidth/5, (int)(screenHeight/2.5)));
 
         data.put("rulesBox", new RulesBox(screenWidth, (int)(screenHeight*0.3), 0, (int)(screenHeight - screenHeight*0.3)));
 

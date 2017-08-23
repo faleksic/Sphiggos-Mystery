@@ -1,6 +1,6 @@
 package hr.faleksic.sphiggosmystery;
 
-public class Boat extends GameObject {
+class Boat extends GameObject {
 
     private boolean moving = false;
     private boolean startingSide = true;
