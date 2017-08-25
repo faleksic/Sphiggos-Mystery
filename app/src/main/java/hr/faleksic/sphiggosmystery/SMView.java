@@ -750,7 +750,7 @@ public class SMView extends SurfaceView implements Runnable {
     }
 
     public void quit() {
-        context.startActivity(new Intent(context.getApplicationContext(), MainActivity.class));
+        context.startActivity(new Intent(context, MainActivity.class));
         ((Activity)context).finish();
     }
 

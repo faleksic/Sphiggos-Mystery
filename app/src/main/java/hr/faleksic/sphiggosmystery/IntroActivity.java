@@ -34,6 +34,7 @@ public class IntroActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        introScroll.resume();
     }
 
     @Override
@@ -87,7 +88,7 @@ public class IntroActivity extends AppCompatActivity {
 
         private void update() {
             if(!stop) {
-                if (timeThisFrame - startFrameTime > 1) {
+                if (timeThisFrame - startFrameTime > 10) {
                     num += (int)(Math.ceil(y * 0.002));
                     startFrameTime = System.currentTimeMillis();
                 }
@@ -139,9 +140,11 @@ public class IntroActivity extends AppCompatActivity {
             }
         }
         public void resume() {
-            running = true;
-            gameThread = new Thread(this);
-            gameThread.start();
+            if(!running) {
+                running = true;
+                gameThread = new Thread(this);
+                gameThread.start();
+            }
         }
 
         @Override
@@ -149,12 +152,12 @@ public class IntroActivity extends AppCompatActivity {
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_DOWN:
                     if(stop) {
-                        startActivity(new Intent(getApplicationContext(), GameActivity.class));
+                        startActivity(new Intent(getContext(), GameActivity.class));
                         finish();
                     } else {
                         taps++;
                         if(taps == 3){
-                            startActivity(new Intent(getApplicationContext(), GameActivity.class));
+                            startActivity(new Intent(getContext(), GameActivity.class));
                             finish();
                         }
                     }

@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         ImageButton playButton = (ImageButton) findViewById(R.id.button_main_play);
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 dialog.show();
                 new Thread() {
                     @Override
@@ -43,10 +43,10 @@ public class MainActivity extends AppCompatActivity {
                         int level = prefs.getInt(getResources().getString(R.string.level), 0);
                         if(level == 0 || level == 1 || level == 8) {
                             if(level == 0) {
-                                SharedPreferences.Editor editor = getSharedPreferences(getResources().getString(R.string.preference_file_key), MODE_PRIVATE).edit();
+                                SharedPreferences.Editor editor = prefs.edit();
                                 editor.putInt(getResources().getString(R.string.level), 1).apply();
                             }
-                            startActivity(new Intent(getApplicationContext(), IntroActivity.class));
+                            startActivity(new Intent(v.getContext(), IntroActivity.class));
                         } else {
                             Intent i = new Intent(MainActivity.this, GameActivity.class);
                             i.putExtra("LEVEL", level);
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         levelsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), LevelsActivity.class));
+                startActivity(new Intent(v.getContext(), LevelsActivity.class));
             }
         });
 
@@ -69,14 +69,14 @@ public class MainActivity extends AppCompatActivity {
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                startActivity(new Intent(v.getContext(), SettingsActivity.class));
             }
         });
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         if(dialog != null) {
             dialog.dismiss();
         }
