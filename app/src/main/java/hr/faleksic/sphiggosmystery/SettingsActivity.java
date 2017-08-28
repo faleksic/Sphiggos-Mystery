@@ -26,7 +26,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyPreferenceFragment()).commit();
+        getFragmentManager().beginTransaction().add(R.id.fragment_container, new MyPreferenceFragment()).commit();
     }
 
     public static class MyPreferenceFragment extends PreferenceFragment

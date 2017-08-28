@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.ImageButton;
 
 public class LevelsActivity extends AppCompatActivity {
-
     ProgressDialog dialog;
 
     @Override
@@ -40,8 +39,6 @@ public class LevelsActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     dialog.show();
                     click(2);
-                    
-                    
                 }
             });
         }
@@ -54,8 +51,6 @@ public class LevelsActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     dialog.show();
                     click(3);
-                    
-                    
                 }
             });
         }
@@ -68,8 +63,6 @@ public class LevelsActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     dialog.show();
                     click(4);
-                    
-                    
                 }
             });
         }
@@ -82,8 +75,6 @@ public class LevelsActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     dialog.show();
                     click(5);
-                    
-                    
                 }
             });
         }
@@ -96,8 +87,6 @@ public class LevelsActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     dialog.show();
                     click(6);
-                    
-                    
                 }
             });
         }
@@ -110,8 +99,6 @@ public class LevelsActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     dialog.show();
                     click(7);
-                    
-                    
                 }
             });
         }
