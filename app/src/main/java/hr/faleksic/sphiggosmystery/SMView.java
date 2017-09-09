@@ -37,7 +37,6 @@ public class SMView extends SurfaceView implements Runnable {
     Context context;
     long startFrameTime;
     long timeThisFrame;
-    long fps;
     private LevelManager levelManager;
     private InputController inputController;
     private boolean showedRules = false;
@@ -51,7 +50,7 @@ public class SMView extends SurfaceView implements Runnable {
     private int screenWidth;
     private int screenHeight;
     private long time;
-    private int toxicNum = 1;
+    private int toxicNum = 2;
     int toxicBitmapIndex = 0;
     int doorBitmapIndex = 0;
     private boolean gameOverText = false;
@@ -123,69 +122,48 @@ public class SMView extends SurfaceView implements Runnable {
             draw();
 
             timeThisFrame = System.currentTimeMillis() - startFrameTime;
-            if (timeThisFrame >= 1) {
-                fps = 1000 / timeThisFrame;
-            }
         }
     }
 
     private void update() {
-        switch (levelManager.getLevel()) {
-            case 1: {
-                //moving sheep in and out of the boat
-                if (((Sheep) gameObjects.get(SHEEP_KEY)).isMoving()) {
-                    gameObjects.get(SHEEP_KEY).update();
-
-                }
-
-                //moving wolf in and out of the boat
-                if (((Wolf) gameObjects.get(WOLF_KEY)).isMoving()) {
-                    gameObjects.get(WOLF_KEY).update();
-
-                }
-
-                //moving cabbage in and out of the boat
-                if (((Cabbage) gameObjects.get(CABBAGE_KEY)).isMoving()) {
-                    gameObjects.get(CABBAGE_KEY).update();
-
-                }
-
-                //moving boat
-                if (((Boat) gameObjects.get(BOAT_KEY)).isMoving()) {
-                    gameObjects.get(BOAT_KEY).update();
-                }
-
-                if (miniGame) {
-                    checkGameOver();
-                    checkWin();
-                }
-
-                if (kill) {
-                    toxicAnimation();
-                }
-                break;
-            } case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 7:{
-
-                if (kill) {
-                    toxicAnimation();
-                }
-
-                if(wrongPasscode) {
-                    gameOver();
-                    wrongPasscode = false;
-                }
-
-                if(correctPasscode) {
-                    openDoor();
-                    correctPasscode = false;
-                }
-                break;
+        if (levelManager.getLevel() == 1) {
+            //moving sheep in and out of the boat
+            if (((Sheep) gameObjects.get(SHEEP_KEY)).isMoving()) {
+                gameObjects.get(SHEEP_KEY).update();
             }
+
+            //moving wolf in and out of the boat
+            if (((Wolf) gameObjects.get(WOLF_KEY)).isMoving()) {
+                gameObjects.get(WOLF_KEY).update();
+            }
+
+            //moving cabbage in and out of the boat
+            if (((Cabbage) gameObjects.get(CABBAGE_KEY)).isMoving()) {
+                gameObjects.get(CABBAGE_KEY).update();
+            }
+
+            //moving boat
+            if (((Boat) gameObjects.get(BOAT_KEY)).isMoving()) {
+                gameObjects.get(BOAT_KEY).update();
+            }
+
+            if (miniGame) {
+                checkGameOver();
+                checkWin();
+            }
+        } else {
+            if(wrongPasscode) {
+                gameOver();
+                wrongPasscode = false;
+            }
+
+            if(correctPasscode) {
+                openDoor();
+                correctPasscode = false;
+            }
+        }
+        if (kill) {
+            toxicAnimation();
         }
     }
 
@@ -540,29 +518,23 @@ public class SMView extends SurfaceView implements Runnable {
 
     private void checkGameOver() {
         String packageName = context.getPackageName();
+        Wolf wolf = ((Wolf) gameObjects.get(WOLF_KEY));
+        Sheep sheep = ((Sheep) gameObjects.get(SHEEP_KEY));
+        Cabbage cabbage = ((Cabbage) gameObjects.get(CABBAGE_KEY));
+        Boat boat = ((Boat) gameObjects.get(BOAT_KEY));
 
-        switch (levelManager.getLevel()) {
-            case 1: {
-                Wolf wolf = ((Wolf) gameObjects.get(WOLF_KEY));
-                Sheep sheep = ((Sheep) gameObjects.get(SHEEP_KEY));
-                Cabbage cabbage = ((Cabbage) gameObjects.get(CABBAGE_KEY));
-                Boat boat = ((Boat) gameObjects.get(BOAT_KEY));
-
-                if (sheep.isOtherSide() && cabbage.isOtherSide() && ((wolf.isInBoat() && boat.isStartingSide()) || (wolf.isStartSide() && boat.isStartingSide()))) {
-                    whatWasWrong = context.getString(context.getResources().getIdentifier("game_over_sheep_cabbage", "string", packageName));
-                    gameOver();
-                } else if (sheep.isOtherSide() && wolf.isOtherSide() && ((cabbage.isInBoat() && boat.isStartingSide()) || (cabbage.isStartSide() && boat.isStartingSide()))) {
-                    whatWasWrong = context.getString(context.getResources().getIdentifier("game_over_wolf_sheep", "string", packageName));
-                    gameOver();
-                } else if (sheep.isStartSide() && wolf.isStartSide() && ((cabbage.isInBoat() && !boat.isStartingSide()) || (cabbage.isOtherSide() && !boat.isStartingSide()))) {
-                    whatWasWrong = context.getString(context.getResources().getIdentifier("game_over_wolf_sheep", "string", packageName));
-                    gameOver();
-                } else if (sheep.isStartSide() && cabbage.isStartSide() && ((wolf.isInBoat() && !boat.isStartingSide()) || (wolf.isOtherSide() && !boat.isStartingSide()))) {
-                    gameOver();
-                    whatWasWrong = context.getString(context.getResources().getIdentifier("game_over_sheep_cabbage", "string", packageName));
-                }
-                break;
-            }
+        if (sheep.isOtherSide() && cabbage.isOtherSide() && ((wolf.isInBoat() && boat.isStartingSide()) || (wolf.isStartSide() && boat.isStartingSide()))) {
+            whatWasWrong = context.getString(context.getResources().getIdentifier("game_over_sheep_cabbage", "string", packageName));
+            gameOver();
+        } else if (sheep.isOtherSide() && wolf.isOtherSide() && ((cabbage.isInBoat() && boat.isStartingSide()) || (cabbage.isStartSide() && boat.isStartingSide()))) {
+            whatWasWrong = context.getString(context.getResources().getIdentifier("game_over_wolf_sheep", "string", packageName));
+            gameOver();
+        } else if (sheep.isStartSide() && wolf.isStartSide() && ((cabbage.isInBoat() && !boat.isStartingSide()) || (cabbage.isOtherSide() && !boat.isStartingSide()))) {
+            whatWasWrong = context.getString(context.getResources().getIdentifier("game_over_wolf_sheep", "string", packageName));
+            gameOver();
+        } else if (sheep.isStartSide() && cabbage.isStartSide() && ((wolf.isInBoat() && !boat.isStartingSide()) || (wolf.isOtherSide() && !boat.isStartingSide()))) {
+            gameOver();
+            whatWasWrong = context.getString(context.getResources().getIdentifier("game_over_sheep_cabbage", "string", packageName));
         }
     }
     private void checkWin() {
@@ -716,35 +688,26 @@ public class SMView extends SurfaceView implements Runnable {
         if(Objects.equals(syncConnPref, "hard")) {
             startLevel(true);
         } else {
-
-            switch (levelManager.getLevel()) {
-                case 1: {
+            if (levelManager.getLevel() == 1) {
                     gameObjects.put(BOAT_KEY, new Boat((int) (screenWidth * 0.3), (int) (screenHeight * 0.2), screenWidth / 2, (int) (screenHeight * 0.2), screenWidth));
                     gameObjects.put(WOLF_KEY, new Wolf((int) (screenWidth * 0.15), (int) (screenHeight * 0.1), (int) (screenWidth / 1.25), (int) (screenHeight * 0.3), screenWidth, screenHeight));
                     gameObjects.put(SHEEP_KEY, new Sheep((int) (screenWidth * 0.15), (int) (screenHeight * 0.1), (int) (screenWidth / 1.3), (int) (screenHeight * 0.1), screenWidth, screenHeight));
                     gameObjects.put(CABBAGE_KEY, new Cabbage((int) (screenWidth * 0.1), (int) (screenHeight * 0.1), (int) (screenWidth / 1.2), (int) (screenHeight * 0.5), screenWidth, screenHeight));
-                    break;
-                }
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                case 6:
-                case 7: {
-                    final EditText editText = (EditText) ((Activity) context).findViewById(R.id.level2_edit_text);
-                    ((Activity) context).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            editText.setText("");
-                        }
+            }
+            else {
+                final EditText editText = (EditText) ((Activity) context).findViewById(R.id.level2_edit_text);
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        editText.setText("");
+                    }
 
-                    });
-                }
+                });
             }
 
             showMiniGame(true);
             miniGame = true;
-            toxicNum = 1;
+            toxicNum = 2;
             passedTest = false;
         }
     }
